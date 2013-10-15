@@ -1,7 +1,7 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
 from trytond.model import ModelView, fields
-from trytond.pyson import Eval, Not
+from trytond.pyson import Eval, Not, And, Bool
 from trytond.pool import Pool, PoolMeta
 from trytond.modules.stock.move import STATES
 
@@ -59,10 +59,16 @@ class StockScanMixin(object):
                 })
         cls._buttons.update({
                 'scan': {
-                        'invisible': Not(Eval('pending_moves', False)),
+                        'invisible': Not(And(
+                                        Eval('pending_moves', False),
+                                        Bool(Eval('scanned_product', {})),
+                                      )),
                     },
                 'init_quantities': {
-                        'invisible': Not(Eval('pending_moves', False)),
+                        'invisible': Not(And(
+                                Eval('pending_moves', False),
+                                Eval('state').in_(['waiting', 'draft']),
+                            ))
                     },
                 })
 
@@ -90,12 +96,11 @@ class StockScanMixin(object):
 
         self.raise_user_error('product_not_pending')
 
+    def get_pick_moves(self):
+        return self.moves
+
     def get_pending_moves(self, name):
-        moves = [l.id for l in self.moves if l.pending_quantity > 0]
-        if self.inventory_moves and len(self.inventory_moves) > 0:
-            inventory = set([m.id for m in self.inventory_moves])
-            moves = list(set(moves) - inventory)
-        return moves
+        return [l.id for l in self.get_pick_moves() if l.pending_quantity > 0]
 
     def get_matching_moves(self):
         """Get possible scanned move"""
@@ -144,61 +149,70 @@ class StockScanMixin(object):
     @ModelView.button
     def init_quantities(cls, shipments):
         for shipment in shipments:
-            for move in shipment.moves:
+            for move in shipment.pending_moves:
                 move.received_quantity = move.quantity
                 move.save()
 
     @classmethod
-    def force_confirm(cls, shipments):
+    def force_split(cls, shipments):
         for shipment in shipments:
-            for move in shipment.move:
-                if not move.received_quantity or \
+            for move in shipment.pending_moves:
+                if move.received_quantity and \
                         move.received_quantity < move.quantity:
-                    move.received_quantity = move.quantity
+                    move.quantity = move.received_quantity
                     move.save()
-
-    @classmethod
-    @ModelView.button
-    def confirm(cls, shipments):
-        cls.done(shipments)
 
 
 class ShipmentIn(StockScanMixin):
     __metaclass__ = PoolMeta
     __name__ = 'stock.shipment.in'
 
-    def confirm(cls, shipments):
-        cls.receive(shipments)
-        super(ShipmentIn, cls).confirm(shipments)
+    def get_pick_moves(self):
+        return self.incoming_moves
+
+    @classmethod
+    def receive(cls, shipments):
+        cls.force_split(shipments)
+        super(ShipmentIn, cls).receive(shipments)
 
 
 class ShipmentInReturn(ShipmentIn):
     __metaclass__ = PoolMeta
     __name__ = 'stock.shipment.in.return'
 
-    def confirm(cls, shipments):
-        cls.wait(shipments)
-        cls.assing(shipments)
-        super(ShipmentInReturn, cls).confirm(shipments)
+    def get_pick_moves(self):
+        return self.outgoing_moves
+
+    @classmethod
+    def wait(cls, shipments):
+        cls.force_split(shipments)
+        super(ShipmentInReturn, cls).wait(shipments)
 
 
 class ShipmentOut(StockScanMixin):
     __metaclass__ = PoolMeta
     __name__ = 'stock.shipment.out'
 
-    def confirm(cls, shipments):
-        cls.assing(shipments)
-        cls.pack(shipments)
-        super(ShipmentOut, cls).confirm(shipments)
+    def get_pick_moves(self):
+        return self.inventory_moves
+
+    @classmethod
+    def assign_try(cls, shipments):
+        cls.force_split(shipments)
+        return super(ShipmentOut, cls).assign_try(shipments)
 
 
 class ShipmentOutReturn(ShipmentOut):
     __metaclass__ = PoolMeta
     __name__ = 'stock.shipment.out.return'
 
-    def confirm(cls, shipments):
-        cls.receive(shipments)
-        super(ShipmentOutReturn, cls).confirm(shipments)
+    def get_pick_moves(self):
+        return self.incoming_moves
+
+    @classmethod
+    def receive(cls, shipments):
+        cls.force_split(shipments)
+        super(ShipmentOut, cls).receive(shipments)
 
 
 class Move:
