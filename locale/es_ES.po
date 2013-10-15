@@ -1,0 +1,209 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:stock.shipment.in.return:"
+msgid "This product is not pending to be scanned in this order."
+msgstr "Este producto no esta pendiente de escanear en este albarán."
+
+msgctxt "error:stock.shipment.in:"
+msgid "This product is not pending to be scanned in this order."
+msgstr "Este producto no esta pendiente de escanear en este albarán."
+
+msgctxt "error:stock.shipment.out.return:"
+msgid "This product is not pending to be scanned in this order."
+msgstr "Este producto no esta pendiente de escanear en este albarán."
+
+msgctxt "error:stock.shipment.out:"
+msgid "This product is not pending to be scanned in this order."
+msgstr "Este producto no esta pendiente de escanear en este albarán."
+
+msgctxt "field:purchase.product_supplier,barcode:"
+msgid "Barcode"
+msgstr "Código de barras"
+
+msgctxt "field:stock.configuration,scanner_fill_property:"
+msgid "Fill quantity"
+msgstr "Rellenar cantidad"
+
+msgctxt "field:stock.configuration,scanner_fill_quantity:"
+msgid "Fill Quantity"
+msgstr "Rellenar cantidad"
+
+msgctxt "field:stock.move,pending_quantity:"
+msgid "Pending Quantity"
+msgstr "Cantidad pendiente"
+
+msgctxt "field:stock.move,received_quantity:"
+msgid "Received Quantity"
+msgstr "Cantidad recibida"
+
+msgctxt "field:stock.shipment.in,pending_moves:"
+msgid "Pending Moves"
+msgstr "Movimientos pendientes"
+
+msgctxt "field:stock.shipment.in,scanned_product:"
+msgid "Scanned product"
+msgstr "Producto escaneado"
+
+msgctxt "field:stock.shipment.in,scanned_quantity:"
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgctxt "field:stock.shipment.in,scanned_unit_price:"
+msgid "Unit Price"
+msgstr "Precio unidad"
+
+msgctxt "field:stock.shipment.in.return,pending_moves:"
+msgid "Pending Moves"
+msgstr "Movimientos pendientes"
+
+msgctxt "field:stock.shipment.in.return,scanned_product:"
+msgid "Scanned product"
+msgstr "Producto escaneado"
+
+msgctxt "field:stock.shipment.in.return,scanned_quantity:"
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgctxt "field:stock.shipment.in.return,scanned_unit_price:"
+msgid "Unit Price"
+msgstr "Precio unidad"
+
+msgctxt "field:stock.shipment.out,pending_moves:"
+msgid "Pending Moves"
+msgstr "Movimientos pendientes"
+
+msgctxt "field:stock.shipment.out,scanned_product:"
+msgid "Scanned product"
+msgstr "Producto escaneado"
+
+msgctxt "field:stock.shipment.out,scanned_quantity:"
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgctxt "field:stock.shipment.out,scanned_unit_price:"
+msgid "Unit Price"
+msgstr "Precio unidad"
+
+msgctxt "field:stock.shipment.out.return,pending_moves:"
+msgid "Pending Moves"
+msgstr "Movimientos pendientes"
+
+msgctxt "field:stock.shipment.out.return,scanned_product:"
+msgid "Scanned product"
+msgstr "Producto escaneado"
+
+msgctxt "field:stock.shipment.out.return,scanned_quantity:"
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgctxt "field:stock.shipment.out.return,scanned_unit_price:"
+msgid "Unit Price"
+msgstr "Precio unidad"
+
+msgctxt "help:purchase.product_supplier,barcode:"
+msgid "The barcode for this product of this supplier."
+msgstr "El código de barras de este producto para este provedor."
+
+msgctxt "help:stock.configuration,scanner_fill_quantity:"
+msgid "If marked pending quantity is loaded when product is scanned"
+msgstr ""
+"Si esta marcado la cantidad pendiente se pone or defecto cuando se escanea "
+"un producto."
+
+msgctxt "help:stock.move,pending_quantity:"
+msgid "Quantity pending to be received"
+msgstr "Cantidad del producto escaneado."
+
+msgctxt "help:stock.move,received_quantity:"
+msgid "Quantity of product received"
+msgstr "Cantidad recibida del producto"
+
+msgctxt "help:stock.shipment.in,pending_moves:"
+msgid "List of pending products to be received."
+msgstr "Lista de productos pendientes de recibir."
+
+msgctxt "help:stock.shipment.in,scanned_product:"
+msgid "Scan the code of the next product."
+msgstr "Escanear el codigo del siguiente producto."
+
+msgctxt "help:stock.shipment.in,scanned_quantity:"
+msgid "Quantity of the scanned product."
+msgstr "Cantidad del producto escaneado."
+
+msgctxt "help:stock.shipment.in.return,pending_moves:"
+msgid "List of pending products to be received."
+msgstr "Lista de productos pendientes de recibir."
+
+msgctxt "help:stock.shipment.in.return,scanned_product:"
+msgid "Scan the code of the next product."
+msgstr "Escanear el codigo del siguiente producto."
+
+msgctxt "help:stock.shipment.in.return,scanned_quantity:"
+msgid "Quantity of the scanned product."
+msgstr "Cantidad del producto escaneado."
+
+msgctxt "help:stock.shipment.out,pending_moves:"
+msgid "List of pending products to be received."
+msgstr "Lista de productos pendientes de recibir."
+
+msgctxt "help:stock.shipment.out,scanned_product:"
+msgid "Scan the code of the next product."
+msgstr "Escanear el codigo del siguiente producto."
+
+msgctxt "help:stock.shipment.out,scanned_quantity:"
+msgid "Quantity of the scanned product."
+msgstr "Cantidad del producto escaneado."
+
+msgctxt "help:stock.shipment.out.return,pending_moves:"
+msgid "List of pending products to be received."
+msgstr "Lista de productos pendientes de recibir."
+
+msgctxt "help:stock.shipment.out.return,scanned_product:"
+msgid "Scan the code of the next product."
+msgstr "Escanear el codigo del siguiente producto."
+
+msgctxt "help:stock.shipment.out.return,scanned_quantity:"
+msgid "Quantity of the scanned product."
+msgstr "Cantidad del producto escaneado."
+
+msgctxt "view:stock.move:"
+msgid "Pending Stock Moves"
+msgstr "Movimientos pendientes"
+
+msgctxt "view:stock.shipment.in:"
+msgid "Accept"
+msgstr "Aceptar"
+
+msgctxt "view:stock.shipment.in:"
+msgid "Init quantities"
+msgstr "Inicializar cantidades"
+
+msgctxt "view:stock.shipment.in:"
+msgid "Pending Moves"
+msgstr "Movimientos pendientes"
+
+msgctxt "view:stock.shipment.out.return:"
+msgid "Accept"
+msgstr "Aceptar"
+
+msgctxt "view:stock.shipment.out.return:"
+msgid "Init quantities"
+msgstr "Inicializar cantidades"
+
+msgctxt "view:stock.shipment.out.return:"
+msgid "Pending Moves"
+msgstr "Movimientos pendientes"
+
+msgctxt "view:stock.shipment.out:"
+msgid "Accept"
+msgstr "Aceptar"
+
+msgctxt "view:stock.shipment.out:"
+msgid "Init quantities"
+msgstr "Inicializar cantidades"
+
+msgctxt "view:stock.shipment.out:"
+msgid "Pending Moves"
+msgstr "Movimientos pendientes"

@@ -1,0 +1,208 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:stock.shipment.in.return:"
+msgid "This product is not pending to be scanned in this order."
+msgstr "El producte no esta pendent d'escanejar en aquest albarà"
+
+msgctxt "error:stock.shipment.in:"
+msgid "This product is not pending to be scanned in this order."
+msgstr "El producte no esta pendent d'escanejar en aquest albarà"
+
+msgctxt "error:stock.shipment.out.return:"
+msgid "This product is not pending to be scanned in this order."
+msgstr "El producte no esta pendent d'escanejar en aquest albarà"
+
+msgctxt "error:stock.shipment.out:"
+msgid "This product is not pending to be scanned in this order."
+msgstr "El producte no esta pendent d'escanejar en aquest albarà"
+
+msgctxt "field:purchase.product_supplier,barcode:"
+msgid "Barcode"
+msgstr "Codi de barres"
+
+msgctxt "field:stock.configuration,scanner_fill_property:"
+msgid "Fill quantity"
+msgstr "Emplena quantitat"
+
+msgctxt "field:stock.configuration,scanner_fill_quantity:"
+msgid "Fill Quantity"
+msgstr "Emplena quantitat"
+
+msgctxt "field:stock.move,pending_quantity:"
+msgid "Pending Quantity"
+msgstr "Quantitat pendent"
+
+msgctxt "field:stock.move,received_quantity:"
+msgid "Received Quantity"
+msgstr "Quantitat rebuda"
+
+msgctxt "field:stock.shipment.in,pending_moves:"
+msgid "Pending Moves"
+msgstr "Moviments pendents"
+
+msgctxt "field:stock.shipment.in,scanned_product:"
+msgid "Scanned product"
+msgstr "Producte escanejat"
+
+msgctxt "field:stock.shipment.in,scanned_quantity:"
+msgid "Quantity"
+msgstr "Quantitat"
+
+msgctxt "field:stock.shipment.in,scanned_unit_price:"
+msgid "Unit Price"
+msgstr "Preu unitat"
+
+msgctxt "field:stock.shipment.in.return,pending_moves:"
+msgid "Pending Moves"
+msgstr "Moviments pendents"
+
+msgctxt "field:stock.shipment.in.return,scanned_product:"
+msgid "Scanned product"
+msgstr "Producte escanejat"
+
+msgctxt "field:stock.shipment.in.return,scanned_quantity:"
+msgid "Quantity"
+msgstr "Quantitat"
+
+msgctxt "field:stock.shipment.in.return,scanned_unit_price:"
+msgid "Unit Price"
+msgstr "Preu unitat"
+
+msgctxt "field:stock.shipment.out,pending_moves:"
+msgid "Pending Moves"
+msgstr "Moviments pendents"
+
+msgctxt "field:stock.shipment.out,scanned_product:"
+msgid "Scanned product"
+msgstr "Producte escanejat"
+
+msgctxt "field:stock.shipment.out,scanned_quantity:"
+msgid "Quantity"
+msgstr "Quantitat"
+
+msgctxt "field:stock.shipment.out,scanned_unit_price:"
+msgid "Unit Price"
+msgstr "Preu unitat"
+
+msgctxt "field:stock.shipment.out.return,pending_moves:"
+msgid "Pending Moves"
+msgstr "Moviments pendents"
+
+msgctxt "field:stock.shipment.out.return,scanned_product:"
+msgid "Scanned product"
+msgstr "Producte escanejat"
+
+msgctxt "field:stock.shipment.out.return,scanned_quantity:"
+msgid "Quantity"
+msgstr "Quantitat"
+
+msgctxt "field:stock.shipment.out.return,scanned_unit_price:"
+msgid "Unit Price"
+msgstr "Preu unitat"
+
+msgctxt "help:purchase.product_supplier,barcode:"
+msgid "The barcode for this product of this supplier."
+msgstr "El codi de barres d'aquest producte per aquest proveïdor"
+
+msgctxt "help:stock.configuration,scanner_fill_quantity:"
+msgid "If marked pending quantity is loaded when product is scanned"
+msgstr ""
+"Si es marca, es carregara la quantitat pendent al escanejar un producte."
+
+msgctxt "help:stock.move,pending_quantity:"
+msgid "Quantity pending to be received"
+msgstr "Quantitat pendent de rebre"
+
+msgctxt "help:stock.move,received_quantity:"
+msgid "Quantity of product received"
+msgstr "Quantitat rebuda del producte"
+
+msgctxt "help:stock.shipment.in,pending_moves:"
+msgid "List of pending products to be received."
+msgstr "Llista de productes pendents a rebre"
+
+msgctxt "help:stock.shipment.in,scanned_product:"
+msgid "Scan the code of the next product."
+msgstr "Escanejeu el codi del proxim producte"
+
+msgctxt "help:stock.shipment.in,scanned_quantity:"
+msgid "Quantity of the scanned product."
+msgstr "Quantitat del producte escanejat"
+
+msgctxt "help:stock.shipment.in.return,pending_moves:"
+msgid "List of pending products to be received."
+msgstr "Llista de productes pendents a rebre"
+
+msgctxt "help:stock.shipment.in.return,scanned_product:"
+msgid "Scan the code of the next product."
+msgstr "Escanejeu el codi del proxim producte"
+
+msgctxt "help:stock.shipment.in.return,scanned_quantity:"
+msgid "Quantity of the scanned product."
+msgstr "Quantitat del producte escanejat"
+
+msgctxt "help:stock.shipment.out,pending_moves:"
+msgid "List of pending products to be received."
+msgstr "Llista de productes pendents a rebre"
+
+msgctxt "help:stock.shipment.out,scanned_product:"
+msgid "Scan the code of the next product."
+msgstr "Escanejeu el codi del proxim producte"
+
+msgctxt "help:stock.shipment.out,scanned_quantity:"
+msgid "Quantity of the scanned product."
+msgstr "Quantitat del producte escanejat"
+
+msgctxt "help:stock.shipment.out.return,pending_moves:"
+msgid "List of pending products to be received."
+msgstr "Llista de productes pendents a rebre"
+
+msgctxt "help:stock.shipment.out.return,scanned_product:"
+msgid "Scan the code of the next product."
+msgstr "Escanejeu el codi del proxim producte"
+
+msgctxt "help:stock.shipment.out.return,scanned_quantity:"
+msgid "Quantity of the scanned product."
+msgstr "Quantitat del producte escanejat"
+
+msgctxt "view:stock.move:"
+msgid "Pending Stock Moves"
+msgstr "Moviments pendents"
+
+msgctxt "view:stock.shipment.in:"
+msgid "Accept"
+msgstr "Acepta"
+
+msgctxt "view:stock.shipment.in:"
+msgid "Init quantities"
+msgstr "Inicialitzar quantitats"
+
+msgctxt "view:stock.shipment.in:"
+msgid "Pending Moves"
+msgstr "Moviments pendents"
+
+msgctxt "view:stock.shipment.out.return:"
+msgid "Accept"
+msgstr "Acepta"
+
+msgctxt "view:stock.shipment.out.return:"
+msgid "Init quantities"
+msgstr "Inicialitzar quantitats"
+
+msgctxt "view:stock.shipment.out.return:"
+msgid "Pending Moves"
+msgstr "Moviments pendents"
+
+msgctxt "view:stock.shipment.out:"
+msgid "Accept"
+msgstr "Acepta"
+
+msgctxt "view:stock.shipment.out:"
+msgid "Init quantities"
+msgstr "Inicialitzar quantitats"
+
+msgctxt "view:stock.shipment.out:"
+msgid "Pending Moves"
+msgstr "Moviments pendents"
