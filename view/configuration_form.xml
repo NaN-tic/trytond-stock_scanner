@@ -4,7 +4,9 @@
 <data>
     <xpath expr="/form/field[@name='shipment_internal_sequence']"
              position="after">
+         <group id="scanner" string="Scanning Configuration" colspan="4">
             <label name="scanner_fill_quantity"/>
             <field name="scanner_fill_quantity"/>
+         </group>
     </xpath>
 </data>
