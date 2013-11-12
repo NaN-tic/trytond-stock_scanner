@@ -1,83 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tryton>
 <data>
- 	<!-- res.company -->
-	<record id="view_stock_configuration_view_form" model="ir.ui.view">
-		<field name="name">configuration_form</field>
-		<field name="model">stock.configuration</field>
-		<field name="type">form</field>
-		<field name="inherit" ref="stock.stock_configuration_view_form"/>
-	</record>
+    <!-- res.company -->
+    <record id="view_stock_configuration_view_form" model="ir.ui.view">
+        <field name="name">configuration_form</field>
+        <field name="model">stock.configuration</field>
+        <field name="type">form</field>
+        <field name="inherit" ref="stock.stock_configuration_view_form"/>
+    </record>
 
-	<record id="view_pending_form" model="ir.ui.view">
-		<field name="name">pending_moves_form</field>
-		<field name="model">stock.move</field>
-		<field name="type">form</field>
-	</record>
+    <record id="view_pending_form" model="ir.ui.view">
+        <field name="name">pending_moves_form</field>
+        <field name="model">stock.move</field>
+        <field name="type">form</field>
+    </record>
 
-	<record id="view_pending_tree" model="ir.ui.view">
-		<field name="name">pending_moves_tree</field>
-		<field name="model">stock.move</field>
+    <record id="view_pending_tree" model="ir.ui.view">
+        <field name="name">pending_moves_tree</field>
+        <field name="model">stock.move</field>
         <field name="type">tree</field>
-	</record>
+    </record>
 
 
     <!-- Replace buttons -->
-	<record id="stock_scanner_view_in_remove_buttons" model="ir.ui.view">
-		<field name="name">shipment_remove_buttons</field>
-		<field name="model">stock.shipment.in</field>
-		<field name="type">form</field>
-		<field name="inherit" ref="stock.shipment_in_view_form"/>
-	</record>
+    <record id="stock_scanner_view_in_remove_buttons" model="ir.ui.view">
+        <field name="name">shipment_remove_buttons</field>
+        <field name="model">stock.shipment.in</field>
+        <field name="type">form</field>
+        <field name="inherit" ref="stock.shipment_in_view_form"/>
+    </record>
 
     <record id="nan_stock_scanner_in_view" model="ir.ui.view">
-		<field name="name">pending_in_moves</field>
-		<field name="model">stock.shipment.in</field>
-		<field name="type">form</field>
-		<field name="inherit" ref="stock.shipment_in_view_form"/>
-	</record>
+        <field name="name">pending_in_moves</field>
+        <field name="model">stock.shipment.in</field>
+        <field name="type">form</field>
+        <field name="inherit" ref="stock.shipment_in_view_form"/>
+    </record>
 
-	<record id="stock_scanner_view_out_remove_buttons" model="ir.ui.view">
-		<field name="name">shipment_remove_buttons</field>
-		<field name="model">stock.shipment.out</field>
-		<field name="type">form</field>
-		<field name="inherit" ref="stock.shipment_out_view_form"/>
-	</record>
+    <record id="stock_scanner_view_out_remove_buttons" model="ir.ui.view">
+        <field name="name">shipment_remove_buttons</field>
+        <field name="model">stock.shipment.out</field>
+        <field name="type">form</field>
+        <field name="inherit" ref="stock.shipment_out_view_form"/>
+    </record>
 
-	<record id="stock_scanner_view_out_return_remove_buttons" model="ir.ui.view">
-		<field name="name">shipment_remove_buttons</field>
+    <record id="stock_scanner_view_out_return_remove_buttons" model="ir.ui.view">
+        <field name="name">shipment_remove_buttons</field>
         <field name="model">stock.shipment.out.return</field>
-		<field name="type">form</field>
-		<field name="inherit" ref="stock.shipment_out_return_view_form"/>
-	</record>
+        <field name="type">form</field>
+        <field name="inherit" ref="stock.shipment_out_return_view_form"/>
+    </record>
 
     <record id="nan_stock_scanner_out_view" model="ir.ui.view">
-		<field name="name">pending_out_moves</field>
-		<field name="model">stock.shipment.out</field>
-		<field name="type">form</field>
-		<field name="inherit" ref="stock.shipment_out_view_form"/>
-	</record>
+        <field name="name">pending_out_moves</field>
+        <field name="model">stock.shipment.out</field>
+        <field name="type">form</field>
+        <field name="inherit" ref="stock.shipment_out_view_form"/>
+    </record>
 
     <record id="nan_stock_scanner_out_return_view" model="ir.ui.view">
-		<field name="name">pending_out_moves</field>
-		<field name="model">stock.shipment.out.return</field>
-		<field name="type">form</field>
-		<field name="inherit" ref="stock.shipment_out_return_view_form"/>
-	</record>
+        <field name="name">pending_out_moves</field>
+        <field name="model">stock.shipment.out.return</field>
+        <field name="type">form</field>
+        <field name="inherit" ref="stock.shipment_out_return_view_form"/>
+    </record>
 
-	<record id="product_supplier_form_view_barcode" model="ir.ui.view">
-		<field name="name">product_supplier_form</field>
-		<field name="model">purchase.product_supplier</field>
-		<field name="type">form</field>
-		<field name="inherit" ref="purchase.product_supplier_view_form"/>
-	</record>
+    <record id="product_supplier_form_view_barcode" model="ir.ui.view">
+        <field name="name">product_supplier_form</field>
+        <field name="model">purchase.product_supplier</field>
+        <field name="type">form</field>
+        <field name="inherit" ref="purchase.product_supplier_view_form"/>
+    </record>
 
-	<record id="product_supplier_tree_view_barcode" model="ir.ui.view">
-		<field name="name">product_supplier_tree</field>
-		<field name="model">purchase.product_supplier</field>
-		<field name="type">tree</field>
-		<field name="inherit" ref="purchase.product_supplier_view_tree_sequence"/>
-	</record>
+    <record id="product_supplier_tree_view_barcode" model="ir.ui.view">
+        <field name="name">product_supplier_tree</field>
+        <field name="model">purchase.product_supplier</field>
+        <field name="type">tree</field>
+        <field name="inherit" ref="purchase.product_supplier_view_tree_sequence"/>
+    </record>
 </data>
 </tryton>
 
