@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tryton>
 <data>
-    <!-- res.company -->
     <record id="view_stock_configuration_view_form" model="ir.ui.view">
         <field name="name">configuration_form</field>
         <field name="model">stock.configuration</field>
@@ -80,4 +79,3 @@
     </record>
 </data>
 </tryton>
-
