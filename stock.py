@@ -47,8 +47,6 @@ class StockScanMixin(object):
     scanned_quantity = fields.Float('Quantity',
         digits=(16, 4), depends=['state'],
         states=MIXIN_STATES, help='Quantity of the scanned product.')
-    scanned_unit_price = fields.Numeric('Unit Price', digits=(16, 4),
-        states=MIXIN_STATES, depends=['state'])
 
     @classmethod
     def __setup__(cls):
@@ -87,11 +85,6 @@ class StockScanMixin(object):
                     result['scanned_quantity'] = move.pending_quantity
                 elif not self.scanned_quantity or self.scanned_quantity == 0:
                     result['scanned_quantity'] = 1
-
-                if move.unit_price:
-                    result['scanned_unit_price'] = move.unit_price
-                else:
-                    result['scanned_unit_price'] = move.product.list_price
                 return result
 
         self.raise_user_error('product_not_pending')
@@ -119,8 +112,6 @@ class StockScanMixin(object):
                 continue
 
             move.received_quantity = (move.received_quantity or 0.0) + qty
-            if move.shipment.scanned_unit_price:
-                move.unit_price = move.shipment.scanned_unit_price
             move.save()
 
     @classmethod
@@ -142,7 +133,6 @@ class StockScanMixin(object):
         cls.write(shipments, {
             'scanned_product': None,
             'scanned_quantity': 0,
-            'scanned_unit_price': None,
         })
 
     @classmethod

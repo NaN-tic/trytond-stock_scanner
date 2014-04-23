@@ -9,8 +9,6 @@
                 <field name="scanned_product" colspan="3"/>
                 <label name="scanned_quantity"/>
                 <field name="scanned_quantity"/>
-               <label name="scanned_unit_price"/>
-                <field name="scanned_unit_price"/>
                 <button name="scan" string="Accept" colspan="2"/>
             </group>
             <field name="pending_moves" colspan="4"
