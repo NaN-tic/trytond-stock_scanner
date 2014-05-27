@@ -42,7 +42,6 @@ class StockScanMixin(object):
         'get_pending_moves')
     scanned_product = fields.Many2One('product.product', 'Scanned product',
         domain=[('type', '!=', 'service')], depends=['state'],
-        on_change=['scanned_product', 'pending_moves', 'scanned_quantity'],
         states=MIXIN_STATES, help='Scan the code of the next product.')
     scanned_quantity = fields.Float('Quantity',
         digits=(16, 4), depends=['state'],
@@ -70,6 +69,7 @@ class StockScanMixin(object):
                     },
                 })
 
+    @fields.depends('scanned_product', 'pending_moves', 'scanned_quantity')
     def on_change_scanned_product(self):
         pool = Pool()
         Config = pool.get('stock.configuration')
