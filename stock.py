@@ -8,8 +8,11 @@ from trytond.modules.stock.move import STATES
 
 __all__ = ['Configuration', 'Move', 'Product', 'ProductSupplier', 'ShipmentIn',
     'ShipmentInReturn', 'ShipmentOut', 'ShipmentOutReturn']
-
 __metaclass__ = PoolMeta
+
+MIXIN_STATES = {
+    'readonly': ~Eval('state').in_(['waiting', 'draft']),
+    }
 
 
 class Configuration:
@@ -28,11 +31,7 @@ class Configuration:
         val = 1 if value else 0
         cls.write([ids], {
                 'scanner_fill_property': val,
-            })
-
-MIXIN_STATES = {
-    'readonly': ~Eval('state').in_(['waiting', 'draft']),
-}
+                })
 
 
 class StockScanMixin(object):
@@ -56,16 +55,16 @@ class StockScanMixin(object):
                 })
         cls._buttons.update({
                 'scan': {
-                        'invisible': Not(And(
-                                        Eval('pending_moves', False),
-                                        Bool(Eval('scanned_product', {})),
-                                      )),
+                    'invisible': Not(And(
+                            Eval('pending_moves', False),
+                            Bool(Eval('scanned_product', {})),
+                            )),
                     },
                 'init_quantities': {
-                        'invisible': Not(And(
-                                Eval('pending_moves', False),
-                                Eval('state').in_(['waiting', 'draft']),
-                            ))
+                    'invisible': Not(And(
+                            Eval('pending_moves', False),
+                            Eval('state').in_(['waiting', 'draft']),
+                            )),
                     },
                 })
 
@@ -202,7 +201,7 @@ class ShipmentOutReturn(ShipmentOut):
     @classmethod
     def receive(cls, shipments):
         cls.force_split(shipments)
-        super(ShipmentOut, cls).receive(shipments)
+        super(ShipmentOutReturn, cls).receive(shipments)
 
 
 class Move:
