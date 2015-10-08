@@ -5,6 +5,14 @@
     <xpath expr="/form/field[@name='shipment_internal_sequence']"
              position="after">
          <group id="scanner" string="Scanning Configuration" colspan="4">
+            <label name="scanner_on_shipment_in"/>
+            <field name="scanner_on_shipment_in"/>
+            <label name="scanner_on_shipment_in_return"/>
+            <field name="scanner_on_shipment_in_return"/>
+            <label name="scanner_on_shipment_out"/>
+            <field name="scanner_on_shipment_out"/>
+            <label name="scanner_on_shipment_out_return"/>
+            <field name="scanner_on_shipment_out_return"/>
             <label name="scanner_fill_quantity"/>
             <field name="scanner_fill_quantity"/>
          </group>

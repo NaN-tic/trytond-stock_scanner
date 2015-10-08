@@ -3,80 +3,157 @@
      copyright notices and license terms. -->
 <tryton>
     <data>
+        <record model="res.group" id="group_stock_scan_all">
+            <field name="name">Stock Scan All</field>
+        </record>
+        <record model="res.user-res.group"
+            id="user_admin_group_stock_scan_all">
+            <field name="user" ref="res.user_admin"/>
+            <field name="group" ref="group_stock_scan_all"/>
+        </record>
+
+        <!-- stock.configuration -->
         <record id="view_stock_configuration_view_form" model="ir.ui.view">
-            <field name="name">configuration_form</field>
             <field name="model">stock.configuration</field>
             <field name="type">form</field>
             <field name="inherit" ref="stock.stock_configuration_view_form"/>
+            <field name="name">configuration_form</field>
         </record>
 
-        <record id="view_pending_form" model="ir.ui.view">
-            <field name="name">pending_moves_form</field>
+        <!-- stock.move -->
+        <record model="ir.ui.view" id="move_view_form_pending">
             <field name="model">stock.move</field>
             <field name="type">form</field>
+            <field name="name">move_form_pending</field>
         </record>
 
-        <record id="view_pending_tree" model="ir.ui.view">
-            <field name="name">pending_moves_tree</field>
+        <record model="ir.ui.view" id="move_view_tree_pending">
             <field name="model">stock.move</field>
             <field name="type">tree</field>
+            <field name="name">move_tree_pending</field>
         </record>
 
-        <!-- Replace buttons -->
-        <record id="stock_scanner_view_in_remove_buttons" model="ir.ui.view">
-            <field name="name">shipment_remove_buttons</field>
+        <!-- stock.shipment.in -->
+        <record model="ir.ui.view" id="shipment_in_view_form">
             <field name="model">stock.shipment.in</field>
             <field name="type">form</field>
             <field name="inherit" ref="stock.shipment_in_view_form"/>
+            <field name="name">shipment_in_form</field>
         </record>
 
-        <record id="nan_stock_scanner_in_view" model="ir.ui.view">
-            <field name="name">pending_in_moves</field>
-            <field name="model">stock.shipment.in</field>
-            <field name="type">form</field>
-            <field name="inherit" ref="stock.shipment_in_view_form"/>
+        <record model="ir.model.button" id="shipment_in_scan_button">
+            <field name="name">scan</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.in')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="shipment_in_scan_button_group_stock">
+            <field name="button" ref="shipment_in_scan_button"/>
+            <field name="group" ref="stock.group_stock"/>
         </record>
 
-        <record id="stock_scanner_view_out_remove_buttons" model="ir.ui.view">
-            <field name="name">shipment_remove_buttons</field>
+        <record model="ir.model.button" id="shipment_in_reset_button">
+            <field name="name">reset_scanned_quantities</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.in')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="shipment_in_reset_button_group_stock">
+            <field name="button" ref="shipment_in_reset_button"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+
+        <record model="ir.model.button" id="shipment_in_scan_all_button">
+            <field name="name">scan_all</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.in')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="shipment_in_scan_all_button_group_stock_scan_all">
+            <field name="button" ref="shipment_in_scan_all_button"/>
+            <field name="group" ref="group_stock_scan_all"/>
+        </record>
+
+        <!-- stock.shipment.out -->
+        <record model="ir.ui.view" id="shipment_out_view_form">
             <field name="model">stock.shipment.out</field>
             <field name="type">form</field>
             <field name="inherit" ref="stock.shipment_out_view_form"/>
+            <field name="name">shipment_out_form</field>
         </record>
 
-        <record id="stock_scanner_view_out_return_remove_buttons" model="ir.ui.view">
-            <field name="name">shipment_remove_buttons</field>
+        <record model="ir.model.button" id="shipment_out_scan_button">
+            <field name="name">scan</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.out')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="shipment_out_scan_button_group_stock">
+            <field name="button" ref="shipment_out_scan_button"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+
+        <record model="ir.model.button" id="shipment_out_reset_button">
+            <field name="name">reset_scanned_quantities</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.out')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="shipment_out_reset_button_group_stock">
+            <field name="button" ref="shipment_out_reset_button"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+
+        <record model="ir.model.button" id="shipment_out_scan_all_button">
+            <field name="name">scan_all</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.out')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="shipment_out_scan_all_button_group_stock_scan_all">
+            <field name="button" ref="shipment_out_scan_all_button"/>
+            <field name="group" ref="group_stock_scan_all"/>
+        </record>
+
+        <!-- stock.shipment.out.return -->
+        <record model="ir.ui.view" id="shipment_out_return_view_form">
             <field name="model">stock.shipment.out.return</field>
             <field name="type">form</field>
             <field name="inherit" ref="stock.shipment_out_return_view_form"/>
+            <field name="name">shipment_out_return_form</field>
         </record>
 
-        <record id="nan_stock_scanner_out_view" model="ir.ui.view">
-            <field name="name">pending_out_moves</field>
-            <field name="model">stock.shipment.out</field>
-            <field name="type">form</field>
-            <field name="inherit" ref="stock.shipment_out_view_form"/>
+        <record model="ir.model.button" id="shipment_out_return_scan_button">
+            <field name="name">scan</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.out.return')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="shipment_out_return_scan_button_group_stock">
+            <field name="button" ref="shipment_out_return_scan_button"/>
+            <field name="group" ref="stock.group_stock"/>
         </record>
 
-        <record id="nan_stock_scanner_out_return_view" model="ir.ui.view">
-            <field name="name">pending_out_moves</field>
-            <field name="model">stock.shipment.out.return</field>
-            <field name="type">form</field>
-            <field name="inherit" ref="stock.shipment_out_return_view_form"/>
+        <record model="ir.model.button" id="shipment_out_return_reset_button">
+            <field name="name">reset_scanned_quantities</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.out.return')]"/>
+        </record>
+        <record model="ir.model.button-res.group"
+            id="shipment_out_return_reset_button_group_stock">
+            <field name="button" ref="shipment_out_return_reset_button"/>
+            <field name="group" ref="stock.group_stock"/>
         </record>
 
-        <record id="product_supplier_form_view_barcode" model="ir.ui.view">
-            <field name="name">product_supplier_form</field>
-            <field name="model">purchase.product_supplier</field>
-            <field name="type">form</field>
-            <field name="inherit" ref="purchase.product_supplier_view_form"/>
+        <record model="ir.model.button" id="shipment_out_return_scan_all_button">
+            <field name="name">scan_all</field>
+            <field name="model"
+                search="[('model', '=', 'stock.shipment.out.return')]"/>
         </record>
-
-        <record id="product_supplier_tree_view_barcode" model="ir.ui.view">
-            <field name="name">product_supplier_tree</field>
-            <field name="model">purchase.product_supplier</field>
-            <field name="type">tree</field>
-            <field name="inherit" ref="purchase.product_supplier_view_tree_sequence"/>
+        <record model="ir.model.button-res.group"
+            id="shipment_out_return_scan_all_button_group_stock_scan_all">
+            <field name="button" ref="shipment_out_return_scan_all_button"/>
+            <field name="group" ref="group_stock_scan_all"/>
         </record>
     </data>
 </tryton>

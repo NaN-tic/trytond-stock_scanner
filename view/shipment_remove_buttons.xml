@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<!-- The COPYRIGHT file at the top level of this repository contains the full
-     copyright notices and license terms. -->
-<data>
-    <xpath expr="//group[@id='buttons']" position="inside">
-        <button name="init_quantities" string="Init quantities" />
-    </xpath>
-</data>

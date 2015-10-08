@@ -169,12 +169,16 @@ msgid "Quantity of the scanned product."
 msgstr "Cantidad del producto escaneado."
 
 msgctxt "view:stock.move:"
-msgid "Pending Stock Moves"
+msgid "Pending Move"
+msgstr "Movimiento pendiente"
+
+msgctxt "view:stock.move:"
+msgid "Pending Moves"
 msgstr "Movimientos pendientes"
 
 msgctxt "view:stock.shipment.in:"
-msgid "Accept"
-msgstr "Aceptar"
+msgid "Scan"
+msgstr "Escanear"
 
 msgctxt "view:stock.shipment.in:"
 msgid "Init quantities"
@@ -185,8 +189,8 @@ msgid "Pending Moves"
 msgstr "Movimientos pendientes"
 
 msgctxt "view:stock.shipment.out.return:"
-msgid "Accept"
-msgstr "Aceptar"
+msgid "Scan"
+msgstr "Escanear"
 
 msgctxt "view:stock.shipment.out.return:"
 msgid "Init quantities"
@@ -197,8 +201,8 @@ msgid "Pending Moves"
 msgstr "Movimientos pendientes"
 
 msgctxt "view:stock.shipment.out:"
-msgid "Accept"
-msgstr "Aceptar"
+msgid "Scan"
+msgstr "Escanear"
 
 msgctxt "view:stock.shipment.out:"
 msgid "Init quantities"
