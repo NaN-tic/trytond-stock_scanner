@@ -1,7 +1,7 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
 from trytond.model import ModelView, fields
-from trytond.pyson import Eval, Not, And, Bool
+from trytond.pyson import Bool, Eval, If, And
 from trytond.pool import Pool, PoolMeta
 from trytond.modules.stock.move import STATES
 
@@ -20,9 +20,9 @@ class Configuration:
     scanner_on_shipment_in = fields.Boolean('Scanner on Supplier Shipments?')
     scanner_on_shipment_in_return = fields.Boolean(
         'Scanner on Supplier Return Shipments?')
-    scanner_on_shipment_out = fields.Boolean('Customer Shipments?')
+    scanner_on_shipment_out = fields.Boolean('Scanner on Customer Shipments?')
     scanner_on_shipment_out_return = fields.Boolean(
-        'Customer Return Shipments?')
+        'Scanner on Customer Return Shipments?')
     scanner_fill_quantity = fields.Boolean('Fill Quantity',
         help='If marked pending quantity is loaded when product is scanned')
 
@@ -71,13 +71,22 @@ class StockScanMixin(object):
     pending_moves = fields.Function(fields.One2Many('stock.move', None,
             'Pending Moves', states={
                 'invisible': (~Eval('scanner_enabled', False)
-                    | ~Eval('state').in_(['waiting', 'draft'])),
+                    | ~Eval('state', 'draft').in_(['waiting', 'draft'])),
                 }, depends=['scanner_enabled', 'state'],
             help='List of pending products to be scan.'),
         'get_pending_moves')
+    scannable_products = fields.Function(fields.Many2Many('product.product',
+            None, None, 'Scannable Products'),
+        'get_scannable_products')
     scanned_product = fields.Many2One('product.product', 'Scanned product',
-        domain=[('type', '!=', 'service')], depends=['state'],
-        states=MIXIN_STATES, help='Scan the code of the next product.')
+        domain=[
+            ('type', '!=', 'service'),
+            If(Bool(Eval('scannable_products')),
+                ('id', 'in', Eval('scannable_products')),
+                ()),
+            ],
+        states=MIXIN_STATES, depends=['scannable_products', 'state'],
+        help='Scan the code of the next product.')
     scanned_uom = fields.Many2One('product.uom', 'Scanned UoM', states={
             'readonly': True,
             })
@@ -98,16 +107,14 @@ class StockScanMixin(object):
                 })
         cls._buttons.update({
                 'scan': {
-                    'invisible': Not(And(
+                    'invisible': ~And(
                             Eval('pending_moves', False),
-                            Bool(Eval('scanned_product')),
-                            )),
+                            Bool(Eval('scanned_product'))),
                     },
                 'reset_scanned_quantities': {
-                    'invisible': Not(And(
+                    'invisible': ~And(
                             Eval('pending_moves', False),
-                            Eval('state').in_(['waiting', 'draft']),
-                            )),
+                            Eval('state').in_(['waiting', 'draft'])),
                     },
                 'scan_all': {
                     'invisible': ~Eval('pending_moves', False),
@@ -115,10 +122,14 @@ class StockScanMixin(object):
                 })
 
     @classmethod
-    def get_scanner_enabled(cls, shipments, name):
+    def default_scanner_enabled(cls):
         pool = Pool()
         Config = pool.get('stock.configuration')
-        scanner_enabled = Config.scanner_on_shipment_type(cls.__name__)
+        return Config.scanner_on_shipment_type(cls.__name__)
+
+    @classmethod
+    def get_scanner_enabled(cls, shipments, name):
+        scanner_enabled = cls.default_scanner_enabled()
         return {}.fromkeys([s.id for s in shipments], scanner_enabled)
 
     def get_pending_moves(self, name):
@@ -126,6 +137,11 @@ class StockScanMixin(object):
 
     def get_pick_moves(self):
         return self.moves
+
+    def get_scannable_products(self, name):
+        moves = self.get_pick_moves()
+        product_ids = set([m.product.id for m in moves])
+        return list(product_ids)
 
     @fields.depends('scanned_product', 'pending_moves', 'scanned_quantity')
     def on_change_scanned_product(self):

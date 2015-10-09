@@ -31,12 +31,12 @@ msgid "Scanner on Supplier Return Shipments?"
 msgstr "Escanejat a devolucions a proveïdor?"
 
 msgctxt "field:stock.configuration,scanner_on_shipment_out:"
-msgid "Customer Shipments?"
-msgstr "Albarans de client?"
+msgid "Scanner on Customer Shipments?"
+msgstr "Escanejat albarans de client?"
 
 msgctxt "field:stock.configuration,scanner_on_shipment_out_return:"
-msgid "Customer Return Shipments?"
-msgstr "Devoluciones de client?"
+msgid "Scanner on Customer Return Shipments?"
+msgstr "Escanejat a devolucions de client?"
 
 msgctxt "field:stock.move,pending_quantity:"
 msgid "Pending Quantity"
