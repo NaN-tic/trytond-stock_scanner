@@ -142,7 +142,10 @@ class StockScanMixin(object):
         result = {}
         scanned_moves = self.get_matching_moves()
         if scanned_moves:
+            self.scanned_uom = scanned_moves[0].uom.id
             result['scanned_uom'] = scanned_moves[0].uom.id
+            result['scanned_product_unit_digits'] = (
+                self.on_change_with_scanned_product_unit_digits())
             if config.scanner_fill_quantity:
                 result['scanned_quantity'] = scanned_moves[0].pending_quantity
             # elif not self.scanned_quantity or self.scanned_quantity == 0:
@@ -163,10 +166,12 @@ class StockScanMixin(object):
     def default_scanned_product_unit_digits():
         return 2
 
-    @fields.depends('scanned_product')
+    @fields.depends('scanned_uom', 'scanned_product')
     def on_change_with_scanned_product_unit_digits(self, name=None):
         if self.scanned_uom:
             return self.scanned_uom.digits
+        elif self.scanned_product:
+            return self.scanned_product.default_uom.digits
         return self.default_scanned_product_unit_digits()
 
     @classmethod
