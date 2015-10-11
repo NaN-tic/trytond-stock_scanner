@@ -1,5 +1,7 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
+from decimal import Decimal
+
 from trytond.model import ModelView, fields
 from trytond.pyson import Bool, Eval, If, And
 from trytond.pool import Pool, PoolMeta
@@ -155,11 +157,12 @@ class StockScanMixin(object):
 
         config = Config(1)
 
-        result = {}
         scanned_moves = self.get_matching_moves()
         if scanned_moves:
             self.scanned_uom = scanned_moves[0].uom.id
+            result = {}
             result['scanned_uom'] = scanned_moves[0].uom.id
+            result['scanned_uom.rec_name'] = scanned_moves[0].uom.rec_name
             result['scanned_product_unit_digits'] = (
                 self.on_change_with_scanned_product_unit_digits())
             if config.scanner_fill_quantity:
@@ -167,7 +170,14 @@ class StockScanMixin(object):
             # elif not self.scanned_quantity or self.scanned_quantity == 0:
             #     result['scanned_quantity'] = 1
             return result
-        self.raise_user_error('product_not_pending')
+        # TODO: make configurable allow nont pending products?
+        # self.raise_user_error('product_not_pending'
+        return {
+            'scanned_uom': self.scanned_product.default_uom.id,
+            'scanned_uom.rec_name': self.scanned_product.default_uom.rec_name,
+            'scanned_product_unit_digits': (
+                self.scanned_product.default_uom.digits),
+            }
 
     def get_matching_moves(self):
         """Get possible scanned move"""
@@ -202,13 +212,32 @@ class StockScanMixin(object):
             shipment.clear_scan_values()
             shipment.save()  # TODO: move to save multiple shipments?
 
+    def get_processed_move(self):
+        pool = Pool()
+        Move = pool.get('stock.move')
+
+        move = Move()
+        move.company = self.company
+        move.product = self.scanned_product
+        move.uom = self.scanned_uom
+        move.quantity = self.scanned_quantity
+        move.shipment = str(self)
+        move.planned_date = self.planned_date
+        move.currency = self.company.currency
+        return move
+
     def process_moves(self, moves):
         pool = Pool()
         Uom = pool.get('product.uom')
 
-        if (not moves or not self.scanned_quantity or not self.scanned_uom
+        if (not self.scanned_quantity or not self.scanned_uom
                 or self.scanned_quantity <= self.scanned_uom.rounding):
             return []
+
+        if not moves:
+            move = self.get_processed_move()
+            move.save()
+            moves = [move]
 
         for move in moves:
             # find move with the same quantity
@@ -240,6 +269,7 @@ class StockScanMixin(object):
     @classmethod
     @ModelView.button
     def reset_scanned_quantities(cls, shipments):
+        Move = Pool().get('stock.move')
         all_pending_moves = []
         for shipment in shipments:
             all_pending_moves.extend(shipment.pending_moves)
@@ -274,6 +304,14 @@ class ShipmentIn(StockScanMixin):
     def get_pick_moves(self):
         return self.incoming_moves
 
+    def get_processed_move(self):
+        move = super(ShipmentIn, self).get_processed_move()
+        move.from_location = self.supplier_location
+        move.to_location = self.warehouse_input
+        # TODO: add to scanner or improve it
+        move.unit_price = move.product.cost_price
+        return move
+
     @classmethod
     def receive(cls, shipments):
         cls.set_scanned_quantity_as_quantity(shipments, 'incoming_moves')
@@ -284,8 +322,13 @@ class ShipmentInReturn(ShipmentIn):
     __metaclass__ = PoolMeta
     __name__ = 'stock.shipment.in.return'
 
-    def get_pick_moves(self):
-        return self.outgoing_moves
+    def get_processed_move(self):
+        move = super(ShipmentIn, self).get_processed_move()
+        move.from_location = self.from_location
+        move.to_location = self.to_location
+        # TODO: add to scanner or improve it
+        move.unit_price = move.product.cost_price
+        return move
 
     @classmethod
     def wait(cls, shipments):
@@ -300,6 +343,14 @@ class ShipmentOut(StockScanMixin):
     def get_pick_moves(self):
         return self.inventory_moves
 
+    def get_processed_move(self):
+        move = super(ShipmentIn, self).get_processed_move()
+        move.from_location = self.warehouse_storage
+        move.to_location = self.warehouse_output
+        # TODO: add to scanner or improve it
+        move.unit_price = move.product.list_price
+        return move
+
     @classmethod
     def assign_try(cls, shipments):
         cls.set_scanned_quantity_as_quantity(shipments, 'inventory_moves')
@@ -312,6 +363,14 @@ class ShipmentOutReturn(ShipmentOut):
 
     def get_pick_moves(self):
         return self.incoming_moves
+
+    def get_processed_move(self):
+        move = super(ShipmentIn, self).get_processed_move()
+        move.from_location = self.customer_location
+        move.to_location = self.warehouse_input
+        # TODO: add to scanner or improve it
+        move.unit_price = move.product.list_price
+        return move
 
     @classmethod
     def receive(cls, shipments):
