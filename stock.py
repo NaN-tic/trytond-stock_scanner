@@ -231,7 +231,7 @@ class StockScanMixin(object):
         Uom = pool.get('product.uom')
 
         if (not self.scanned_quantity or not self.scanned_uom
-                or self.scanned_quantity <= self.scanned_uom.rounding):
+                or self.scanned_quantity < self.scanned_uom.rounding):
             return []
 
         if not moves:
