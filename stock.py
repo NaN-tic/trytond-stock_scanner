@@ -283,7 +283,7 @@ class StockScanMixin(object):
     def scan_all(cls, shipments):
         for shipment in shipments:
             for move in shipment.pending_moves:
-                move.received_quantity = move.quantity
+                move.scanned_quantity = move.quantity
                 move.save()
 
     @classmethod

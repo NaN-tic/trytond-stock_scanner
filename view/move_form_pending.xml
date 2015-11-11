@@ -5,6 +5,6 @@
     <field name="product"/>
     <field name="quantity"/>
     <field name="uom"/>
-    <field name="received_quantity"/>
+    <field name="scanned_quantity"/>
     <field name="pending_quantity"/>
 </form>

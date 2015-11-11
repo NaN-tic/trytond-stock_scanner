@@ -205,7 +205,7 @@ Scan one unit of the shipment and assign it::
     True
     >>> shipment_out.click('scan')
     >>> move, = shipment_out.pending_moves
-    >>> move.received_quantity == 1.0
+    >>> move.scanned_quantity == 1.0
     True
     >>> move.pending_quantity == 9.0
     True
