@@ -150,34 +150,29 @@ class StockScanMixin(object):
         pool = Pool()
         Config = pool.get('stock.configuration')
         if not self.scanned_product:
-            return {
-                'scanned_uom': None,
-                'scanned_quantity': None,
-                }
+            self.scanned_uom = None
+            self.scanned_quantity = None
+            return
 
         config = Config(1)
 
         scanned_moves = self.get_matching_moves()
         if scanned_moves:
-            self.scanned_uom = scanned_moves[0].uom.id
-            result = {}
-            result['scanned_uom'] = scanned_moves[0].uom.id
-            result['scanned_uom.rec_name'] = scanned_moves[0].uom.rec_name
-            result['scanned_product_unit_digits'] = (
+            self.scanned_uom = scanned_moves[0].uom
+
+            self.scanned_product_unit_digits = (
                 self.on_change_with_scanned_product_unit_digits())
             if config.scanner_fill_quantity:
-                result['scanned_quantity'] = scanned_moves[0].pending_quantity
+                self.scanned_quantity = scanned_moves[0].pending_quantity
             # elif not self.scanned_quantity or self.scanned_quantity == 0:
             #     result['scanned_quantity'] = 1
-            return result
+            return
         # TODO: make configurable allow nont pending products?
         # self.raise_user_error('product_not_pending'
-        return {
-            'scanned_uom': self.scanned_product.default_uom.id,
-            'scanned_uom.rec_name': self.scanned_product.default_uom.rec_name,
-            'scanned_product_unit_digits': (
-                self.scanned_product.default_uom.digits),
-            }
+
+        self.scanned_uom = self.scanned_product.default_uom
+        self.scanned_product_unit_digits = (
+            self.scanned_product.default_uom.digits)
 
     def get_matching_moves(self):
         """Get possible scanned move"""
