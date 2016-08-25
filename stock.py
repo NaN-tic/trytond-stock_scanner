@@ -61,9 +61,8 @@ class Move:
         Uom = pool.get('product.uom')
         quantity = {}
         for move in moves:
-            quantity[move.id] = Uom.round(
-                move.quantity - (move.scanned_quantity or 0.0),
-                move.uom.rounding)
+            quantity[move.id] = move.uom.round(
+                move.quantity - (move.scanned_quantity or 0.0))
         return quantity
 
 
@@ -155,7 +154,6 @@ class StockScanMixin(object):
             return
 
         config = Config(1)
-
         scanned_moves = self.get_matching_moves()
         if scanned_moves:
             self.scanned_uom = scanned_moves[0].uom
