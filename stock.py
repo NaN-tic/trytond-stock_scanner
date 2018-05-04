@@ -8,7 +8,7 @@ from trytond.modules.stock.move import STATES
 
 __all__ = ['Configuration', 'Move', 'ShipmentIn',
     'ShipmentInReturn', 'ShipmentOut', 'ShipmentOutReturn']
-__metaclass__ = PoolMeta
+
 
 MIXIN_STATES = {
     'readonly': ~Eval('state').in_(['waiting', 'draft']),
@@ -17,6 +17,8 @@ MIXIN_STATES = {
 
 class Configuration:
     __name__ = 'stock.configuration'
+    __metaclass__ = PoolMeta
+
     scanner_on_shipment_in = fields.Boolean('Scanner on Supplier Shipments?')
     scanner_on_shipment_in_return = fields.Boolean(
         'Scanner on Supplier Return Shipments?')
@@ -41,6 +43,7 @@ class Configuration:
 
 class Move:
     __name__ = 'stock.move'
+    __metaclass__ = PoolMeta
     scanned_quantity = fields.Float('Scanned Quantity',
         digits=(16, Eval('unit_digits', 2)), states=STATES,
         depends=['state', 'unit_digits'])
