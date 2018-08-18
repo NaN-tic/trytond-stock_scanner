@@ -64,8 +64,11 @@ Create customer::
 Create category::
 
     >>> ProductCategory = Model.get('product.category')
-    >>> category = ProductCategory(name='Category')
-    >>> category.save()
+    >>> account_category = ProductCategory(name='Category')
+    >>> account_category.accounting = True
+    >>> account_category.account_expense = expense
+    >>> account_category.account_revenue = revenue
+    >>> account_category.save()
 
 Create product::
 
@@ -76,13 +79,10 @@ Create product::
     >>> product = Product()
     >>> template = ProductTemplate()
     >>> template.name = 'Product'
-    >>> template.category = category
+    >>> template.account_category = account_category
     >>> template.default_uom = unit
     >>> template.type = 'goods'
     >>> template.list_price = Decimal('20')
-    >>> template.cost_price = Decimal('8')
-    >>> template.account_expense = expense
-    >>> template.account_revenue = revenue
     >>> template.salable = True
     >>> template.save()
     >>> product.template = template
