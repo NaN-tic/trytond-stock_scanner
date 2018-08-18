@@ -148,7 +148,7 @@ Make 1 unit of the product available::
     >>> inventory_line.expected_quantity = 0.0
     >>> inventory.click('confirm')
     >>> inventory.state
-    u'done'
+    'done'
 
 Scan one unit of the shipment and assign it::
 
@@ -187,9 +187,9 @@ Set the state as Done::
     >>> len(shipment_out.inventory_moves)
     1
     >>> shipment_out.inventory_moves[0].state
-    u'done'
+    'done'
     >>> shipment_out.outgoing_moves[0].state
-    u'done'
+    'done'
     >>> sum([m.quantity for m in shipment_out.inventory_moves]) == \
     ...     sum([m.quantity for m in shipment_out.outgoing_moves])
     True

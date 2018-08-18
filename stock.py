@@ -15,9 +15,8 @@ MIXIN_STATES = {
     }
 
 
-class Configuration:
+class Configuration(metaclass=PoolMeta):
     __name__ = 'stock.configuration'
-    __metaclass__ = PoolMeta
 
     scanner_on_shipment_in = fields.Boolean('Scanner on Supplier Shipments?')
     scanner_on_shipment_in_return = fields.Boolean(
@@ -41,9 +40,8 @@ class Configuration:
             return config.scanner_on_shipment_out_return
 
 
-class Move:
+class Move(metaclass=PoolMeta):
     __name__ = 'stock.move'
-    __metaclass__ = PoolMeta
     scanned_quantity = fields.Float('Scanned Quantity',
         digits=(16, Eval('unit_digits', 2)), states=STATES,
         depends=['state', 'unit_digits'])
@@ -289,8 +287,7 @@ class StockScanMixin(object):
                     move.save()
 
 
-class ShipmentIn(StockScanMixin):
-    __metaclass__ = PoolMeta
+class ShipmentIn(StockScanMixin, metaclass=PoolMeta):
     __name__ = 'stock.shipment.in'
 
     def get_pick_moves(self):
@@ -310,8 +307,7 @@ class ShipmentIn(StockScanMixin):
         super(ShipmentIn, cls).receive(shipments)
 
 
-class ShipmentInReturn(ShipmentIn):
-    __metaclass__ = PoolMeta
+class ShipmentInReturn(ShipmentIn, metaclass=PoolMeta):
     __name__ = 'stock.shipment.in.return'
 
     def get_processed_move(self):
@@ -328,8 +324,7 @@ class ShipmentInReturn(ShipmentIn):
         super(ShipmentInReturn, cls).wait(shipments)
 
 
-class ShipmentOut(StockScanMixin):
-    __metaclass__ = PoolMeta
+class ShipmentOut(StockScanMixin, metaclass=PoolMeta):
     __name__ = 'stock.shipment.out'
 
     def get_pick_moves(self):
@@ -349,8 +344,7 @@ class ShipmentOut(StockScanMixin):
         return super(ShipmentOut, cls).assign_try(shipments)
 
 
-class ShipmentOutReturn(ShipmentOut):
-    __metaclass__ = PoolMeta
+class ShipmentOutReturn(ShipmentOut, metaclass=PoolMeta):
     __name__ = 'stock.shipment.out.return'
 
     def get_pick_moves(self):
