@@ -99,10 +99,6 @@ class StockScanMixin(object):
     @classmethod
     def __setup__(cls):
         super(StockScanMixin, cls).__setup__()
-        cls._error_messages.update({
-                'product_not_pending': ('This product is not pending to be '
-                    'scanned in this order.'),
-                })
         cls._buttons.update({
                 'scan': {
                     'invisible': ~And(
@@ -159,11 +155,8 @@ class StockScanMixin(object):
                 self.on_change_with_scanned_product_unit_digits())
             if config.scanner_fill_quantity:
                 self.scanned_quantity = scanned_moves[0].pending_quantity
-            # elif not self.scanned_quantity or self.scanned_quantity == 0:
-            #     result['scanned_quantity'] = 1
             return
-        # TODO: make configurable allow nont pending products?
-        # self.raise_user_error('product_not_pending'
+
 
         self.scanned_uom = self.scanned_product.default_uom
         self.scanned_product_unit_digits = (
