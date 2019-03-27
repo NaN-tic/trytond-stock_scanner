@@ -62,6 +62,14 @@ class Move(metaclass=PoolMeta):
                 move.quantity - (move.scanned_quantity or 0.0))
         return quantity
 
+    @classmethod
+    def copy(cls, moves, default=None):
+        if default is None:
+            default = {}
+        default = default.copy()
+        default['scanned_quantity'] = None
+        return super(Move, cls).copy(moves, default=default)
+
 
 class StockScanMixin(object):
     scanner_enabled = fields.Function(fields.Boolean('Scanner Enabled'),
@@ -121,6 +129,10 @@ class StockScanMixin(object):
         Config = pool.get('stock.configuration')
         return Config.scanner_on_shipment_type(cls.__name__)
 
+    @staticmethod
+    def default_scanned_product_unit_digits():
+        return 2
+
     @classmethod
     def get_scanner_enabled(cls, shipments, name):
         scanner_enabled = cls.default_scanner_enabled()
@@ -171,10 +183,6 @@ class StockScanMixin(object):
                 moves.append(move)
         return moves
 
-    @staticmethod
-    def default_scanned_product_unit_digits():
-        return 2
-
     @fields.depends('scanned_uom', 'scanned_product')
     def on_change_with_scanned_product_unit_digits(self, name=None):
         if self.scanned_uom:
@@ -215,7 +223,7 @@ class StockScanMixin(object):
 
         if (not self.scanned_quantity or not self.scanned_uom
                 or self.scanned_quantity < self.scanned_uom.rounding):
-            return []
+            return
 
         if not moves:
             move = self.get_processed_move()
@@ -230,7 +238,7 @@ class StockScanMixin(object):
                     < move.uom.rounding):
                 move.scanned_quantity = move.quantity
                 move.save()
-                return [move]
+                return move
 
         # Find move with the nearest pending quantity
         moves.sort(key=lambda m: m.internal_quantity)
@@ -241,9 +249,14 @@ class StockScanMixin(object):
             found_move = move
             if move.quantity > scanned_qty_move_uom:
                 break
-        found_move.scanned_quantity = scanned_qty_move_uom
-        found_move.save()
-        return [found_move]
+
+        if found_move:
+            if found_move.scanned_quantity:
+                found_move.scanned_quantity += scanned_qty_move_uom
+            else:
+                found_move.scanned_quantity = scanned_qty_move_uom
+            found_move.save()
+            return found_move
 
     def clear_scan_values(self):
         self.scanned_product = None
