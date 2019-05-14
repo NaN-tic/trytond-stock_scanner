@@ -41,41 +41,38 @@
 
         <record model="ir.model.button" id="shipment_in_scan_button">
             <field name="name">scan</field>
-            <field name="model"
-                search="[('model', '=', 'stock.shipment.in')]"/>
+            <field name="string">Scan</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.in')]"/>
         </record>
-        <record model="ir.model.button-res.group"
-            id="shipment_in_scan_button_group_stock">
+        <record model="ir.model.button-res.group" id="shipment_in_scan_button_group_stock">
             <field name="button" ref="shipment_in_scan_button"/>
             <field name="group" ref="stock.group_stock"/>
         </record>
 
         <record model="ir.model.button" id="shipment_in_reset_button">
             <field name="name">reset_scanned_quantities</field>
-            <field name="model"
-                search="[('model', '=', 'stock.shipment.in')]"/>
+            <field name="string">Reset Scanned Quantities</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.in')]"/>
         </record>
-        <record model="ir.model.button-res.group"
-            id="shipment_in_reset_button_group_stock">
+        <record model="ir.model.button-res.group" id="shipment_in_reset_button_group_stock">
             <field name="button" ref="shipment_in_reset_button"/>
             <field name="group" ref="stock.group_stock"/>
         </record>
 
         <record model="ir.model.button" id="shipment_in_scan_all_button">
             <field name="name">scan_all</field>
-            <field name="model"
-                search="[('model', '=', 'stock.shipment.in')]"/>
+            <field name="string">Scan All</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.in')]"/>
         </record>
-        <record model="ir.model.button-res.group"
-            id="shipment_in_scan_all_button_group_stock_scan_all">
+        <record model="ir.model.button-res.group" id="shipment_in_scan_all_button_group_stock_scan_all">
             <field name="button" ref="shipment_in_scan_all_button"/>
             <field name="group" ref="group_stock_scan_all"/>
         </record>
 
         <record model="ir.model.button" id="shipment_return_in_scan_button">
             <field name="name">scan</field>
-            <field name="model"
-                search="[('model', '=', 'stock.shipment.in.return')]"/>
+            <field name="string">Scan</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.in.return')]"/>
         </record>
         <record model="ir.model.button-res.group"
             id="shipment_in_return_scan_button_group_stock">
@@ -85,22 +82,20 @@
 
         <record model="ir.model.button" id="shipment_in_return_scan_all_button">
             <field name="name">scan_all</field>
-            <field name="model"
-                search="[('model', '=', 'stock.shipment.in.return')]"/>
+            <field name="string">Scan All</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.in.return')]"/>
         </record>
-        <record model="ir.model.button-res.group"
-            id="shipment_in_return_scan_all_button_group_stock">
+        <record model="ir.model.button-res.group" id="shipment_in_return_scan_all_button_group_stock">
             <field name="button" ref="shipment_in_return_scan_all_button"/>
             <field name="group" ref="stock.group_stock"/>
         </record>
 
         <record model="ir.model.button" id="shipment_in_return_reset_scanned_quantities_button">
             <field name="name">reset_scanned_quantities</field>
-            <field name="model"
-                search="[('model', '=', 'stock.shipment.in.return')]"/>
+            <field name="string">Reset Scanned Quantities</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.in.return')]"/>
         </record>
-        <record model="ir.model.button-res.group"
-            id="shipment_in_reset_scanned_quantities_button_group_stock">
+        <record model="ir.model.button-res.group" id="shipment_in_reset_scanned_quantities_button_group_stock">
             <field name="button" ref="shipment_in_return_reset_scanned_quantities_button"/>
             <field name="group" ref="stock.group_stock"/>
         </record>
@@ -114,33 +109,30 @@
 
         <record model="ir.model.button" id="shipment_out_scan_button">
             <field name="name">scan</field>
-            <field name="model"
-                search="[('model', '=', 'stock.shipment.out')]"/>
+            <field name="string">Scan</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.out')]"/>
         </record>
-        <record model="ir.model.button-res.group"
-            id="shipment_out_scan_button_group_stock">
+        <record model="ir.model.button-res.group" id="shipment_out_scan_button_group_stock">
             <field name="button" ref="shipment_out_scan_button"/>
             <field name="group" ref="stock.group_stock"/>
         </record>
 
         <record model="ir.model.button" id="shipment_out_reset_button">
             <field name="name">reset_scanned_quantities</field>
-            <field name="model"
-                search="[('model', '=', 'stock.shipment.out')]"/>
+            <field name="string">Reset Scanned Quantities</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.out')]"/>
         </record>
-        <record model="ir.model.button-res.group"
-            id="shipment_out_reset_button_group_stock">
+        <record model="ir.model.button-res.group" id="shipment_out_reset_button_group_stock">
             <field name="button" ref="shipment_out_reset_button"/>
             <field name="group" ref="stock.group_stock"/>
         </record>
 
         <record model="ir.model.button" id="shipment_out_scan_all_button">
             <field name="name">scan_all</field>
-            <field name="model"
-                search="[('model', '=', 'stock.shipment.out')]"/>
+            <field name="string">Scan All</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.out')]"/>
         </record>
-        <record model="ir.model.button-res.group"
-            id="shipment_out_scan_all_button_group_stock_scan_all">
+        <record model="ir.model.button-res.group" id="shipment_out_scan_all_button_group_stock_scan_all">
             <field name="button" ref="shipment_out_scan_all_button"/>
             <field name="group" ref="group_stock_scan_all"/>
         </record>
@@ -154,33 +146,30 @@
 
         <record model="ir.model.button" id="shipment_out_return_scan_button">
             <field name="name">scan</field>
-            <field name="model"
-                search="[('model', '=', 'stock.shipment.out.return')]"/>
+            <field name="string">Scan</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.out.return')]"/>
         </record>
-        <record model="ir.model.button-res.group"
-            id="shipment_out_return_scan_button_group_stock">
+        <record model="ir.model.button-res.group" id="shipment_out_return_scan_button_group_stock">
             <field name="button" ref="shipment_out_return_scan_button"/>
             <field name="group" ref="stock.group_stock"/>
         </record>
 
         <record model="ir.model.button" id="shipment_out_return_reset_button">
             <field name="name">reset_scanned_quantities</field>
-            <field name="model"
-                search="[('model', '=', 'stock.shipment.out.return')]"/>
+            <field name="string">Reset Scanned Quantities</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.out.return')]"/>
         </record>
-        <record model="ir.model.button-res.group"
-            id="shipment_out_return_reset_button_group_stock">
+        <record model="ir.model.button-res.group" id="shipment_out_return_reset_button_group_stock">
             <field name="button" ref="shipment_out_return_reset_button"/>
             <field name="group" ref="stock.group_stock"/>
         </record>
 
         <record model="ir.model.button" id="shipment_out_return_scan_all_button">
             <field name="name">scan_all</field>
-            <field name="model"
-                search="[('model', '=', 'stock.shipment.out.return')]"/>
+            <field name="string">Scan All</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.out.return')]"/>
         </record>
-        <record model="ir.model.button-res.group"
-            id="shipment_out_return_scan_all_button_group_stock_scan_all">
+        <record model="ir.model.button-res.group" id="shipment_out_return_scan_all_button_group_stock_scan_all">
             <field name="button" ref="shipment_out_return_scan_all_button"/>
             <field name="group" ref="group_stock_scan_all"/>
         </record>

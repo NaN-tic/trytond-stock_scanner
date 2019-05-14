@@ -2,22 +2,6 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "error:stock.shipment.in.return:"
-msgid "This product is not pending to be scanned in this order."
-msgstr "El producte no esta pendent d'escanejar en aquest albarà"
-
-msgctxt "error:stock.shipment.in:"
-msgid "This product is not pending to be scanned in this order."
-msgstr "El producte no esta pendent d'escanejar en aquest albarà"
-
-msgctxt "error:stock.shipment.out.return:"
-msgid "This product is not pending to be scanned in this order."
-msgstr "El producte no esta pendent d'escanejar en aquest albarà"
-
-msgctxt "error:stock.shipment.out:"
-msgid "This product is not pending to be scanned in this order."
-msgstr "El producte no esta pendent d'escanejar en aquest albarà"
-
 msgctxt "field:stock.configuration,scanner_fill_quantity:"
 msgid "Fill Quantity"
 msgstr "Emplena quantitat"
@@ -50,6 +34,10 @@ msgctxt "field:stock.shipment.in,pending_moves:"
 msgid "Pending Moves"
 msgstr "Moviments pendents"
 
+msgctxt "field:stock.shipment.in,scannable_products:"
+msgid "Scannable Products"
+msgstr "Escanejar productes"
+
 msgctxt "field:stock.shipment.in,scanned_product:"
 msgid "Scanned product"
 msgstr "Producte escanejat"
@@ -73,6 +61,10 @@ msgstr "Escanejat habilitat"
 msgctxt "field:stock.shipment.in.return,pending_moves:"
 msgid "Pending Moves"
 msgstr "Moviments pendents"
+
+msgctxt "field:stock.shipment.in.return,scannable_products:"
+msgid "Scannable Products"
+msgstr "Escanejar productes"
 
 msgctxt "field:stock.shipment.in.return,scanned_product:"
 msgid "Scanned product"
@@ -98,6 +90,10 @@ msgctxt "field:stock.shipment.out,pending_moves:"
 msgid "Pending Moves"
 msgstr "Moviments pendents"
 
+msgctxt "field:stock.shipment.out,scannable_products:"
+msgid "Scannable Products"
+msgstr "Escanejar productes"
+
 msgctxt "field:stock.shipment.out,scanned_product:"
 msgid "Scanned product"
 msgstr "Producte escanejat"
@@ -121,6 +117,10 @@ msgstr "Escanejat habilitat"
 msgctxt "field:stock.shipment.out.return,pending_moves:"
 msgid "Pending Moves"
 msgstr "Moviments pendents"
+
+msgctxt "field:stock.shipment.out.return,scannable_products:"
+msgid "Scannable Products"
+msgstr "Escanejar productes"
 
 msgctxt "field:stock.shipment.out.return,scanned_product:"
 msgid "Scanned product"
@@ -198,6 +198,55 @@ msgstr "Escanejeu el codi del proxim producte"
 msgctxt "help:stock.shipment.out.return,scanned_quantity:"
 msgid "Quantity of the scanned product."
 msgstr "Quantitat del producte escanejat"
+
+msgctxt "model:ir.model.button,string:shipment_in_reset_button"
+msgid "Reset Scanned Quantities"
+msgstr "Reestableix quantitats escanejades"
+
+msgctxt ""
+"model:ir.model.button,string:shipment_in_return_reset_scanned_quantities_button"
+msgid "Reset Scanned Quantities"
+msgstr "Reestableix quantitats escanejades"
+
+msgctxt "model:ir.model.button,string:shipment_in_return_scan_all_button"
+msgid "Scan All"
+msgstr "Escaneja tot"
+
+msgctxt "model:ir.model.button,string:shipment_in_scan_all_button"
+msgid "Scan All"
+msgstr "Escaneja tot"
+
+msgctxt "model:ir.model.button,string:shipment_in_scan_button"
+msgid "Scan"
+msgstr "Escaneja"
+
+msgctxt "model:ir.model.button,string:shipment_out_reset_button"
+msgid "Reset Scanned Quantities"
+msgstr "Reestableix quantitats escanejades"
+
+msgctxt "model:ir.model.button,string:shipment_out_return_reset_button"
+msgid "Reset Scanned Quantities"
+msgstr "Reestableix quantitats escanejades"
+
+msgctxt "model:ir.model.button,string:shipment_out_return_scan_all_button"
+msgid "Scan All"
+msgstr "Escaneja tot"
+
+msgctxt "model:ir.model.button,string:shipment_out_return_scan_button"
+msgid "Scan"
+msgstr "Escaneja"
+
+msgctxt "model:ir.model.button,string:shipment_out_scan_all_button"
+msgid "Scan All"
+msgstr "Escaneja tot"
+
+msgctxt "model:ir.model.button,string:shipment_out_scan_button"
+msgid "Scan"
+msgstr "Escaneja"
+
+msgctxt "model:ir.model.button,string:shipment_return_in_scan_button"
+msgid "Scan"
+msgstr "Escaneja"
 
 msgctxt "model:res.group,name:group_stock_scan_all"
 msgid "Stock Scan All"
