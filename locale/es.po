@@ -2,22 +2,6 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "error:stock.shipment.in.return:"
-msgid "This product is not pending to be scanned in this order."
-msgstr "Este producto no esta pendiente de escanear en este albarán."
-
-msgctxt "error:stock.shipment.in:"
-msgid "This product is not pending to be scanned in this order."
-msgstr "Este producto no esta pendiente de escanear en este albarán."
-
-msgctxt "error:stock.shipment.out.return:"
-msgid "This product is not pending to be scanned in this order."
-msgstr "Este producto no esta pendiente de escanear en este albarán."
-
-msgctxt "error:stock.shipment.out:"
-msgid "This product is not pending to be scanned in this order."
-msgstr "Este producto no esta pendiente de escanear en este albarán."
-
 msgctxt "field:stock.configuration,scanner_fill_quantity:"
 msgid "Fill Quantity"
 msgstr "Rellenar cantidad"
@@ -50,6 +34,10 @@ msgctxt "field:stock.shipment.in,pending_moves:"
 msgid "Pending Moves"
 msgstr "Movimientos pendientes"
 
+msgctxt "field:stock.shipment.in,scannable_products:"
+msgid "Scannable Products"
+msgstr "Escanear productos"
+
 msgctxt "field:stock.shipment.in,scanned_product:"
 msgid "Scanned product"
 msgstr "Producto escaneado"
@@ -73,6 +61,10 @@ msgstr "Escaneado habilitado"
 msgctxt "field:stock.shipment.in.return,pending_moves:"
 msgid "Pending Moves"
 msgstr "Movimientos pendientes"
+
+msgctxt "field:stock.shipment.in.return,scannable_products:"
+msgid "Scannable Products"
+msgstr "Escanear productos"
 
 msgctxt "field:stock.shipment.in.return,scanned_product:"
 msgid "Scanned product"
@@ -98,6 +90,10 @@ msgctxt "field:stock.shipment.out,pending_moves:"
 msgid "Pending Moves"
 msgstr "Movimientos pendientes"
 
+msgctxt "field:stock.shipment.out,scannable_products:"
+msgid "Scannable Products"
+msgstr "Escanear productos"
+
 msgctxt "field:stock.shipment.out,scanned_product:"
 msgid "Scanned product"
 msgstr "Producto escaneado"
@@ -121,6 +117,10 @@ msgstr "Escaneado habilitado"
 msgctxt "field:stock.shipment.out.return,pending_moves:"
 msgid "Pending Moves"
 msgstr "Movimientos pendientes"
+
+msgctxt "field:stock.shipment.out.return,scannable_products:"
+msgid "Scannable Products"
+msgstr "Escanear productos"
 
 msgctxt "field:stock.shipment.out.return,scanned_product:"
 msgid "Scanned product"
@@ -199,6 +199,55 @@ msgstr "Escanear el codigo del siguiente producto."
 msgctxt "help:stock.shipment.out.return,scanned_quantity:"
 msgid "Quantity of the scanned product."
 msgstr "Cantidad del producto escaneado."
+
+msgctxt "model:ir.model.button,string:shipment_in_reset_button"
+msgid "Reset Scanned Quantities"
+msgstr "Reestablecer cantidad escaneada"
+
+msgctxt ""
+"model:ir.model.button,string:shipment_in_return_reset_scanned_quantities_button"
+msgid "Reset Scanned Quantities"
+msgstr "Reestablecer cantidad escaneada"
+
+msgctxt "model:ir.model.button,string:shipment_in_return_scan_all_button"
+msgid "Scan All"
+msgstr "Escanear todo"
+
+msgctxt "model:ir.model.button,string:shipment_in_scan_all_button"
+msgid "Scan All"
+msgstr "Escanear todo"
+
+msgctxt "model:ir.model.button,string:shipment_in_scan_button"
+msgid "Scan"
+msgstr "Escanear"
+
+msgctxt "model:ir.model.button,string:shipment_out_reset_button"
+msgid "Reset Scanned Quantities"
+msgstr "Reestablecer cantidad escaneada"
+
+msgctxt "model:ir.model.button,string:shipment_out_return_reset_button"
+msgid "Reset Scanned Quantities"
+msgstr "Reestablecer cantidad escaneada"
+
+msgctxt "model:ir.model.button,string:shipment_out_return_scan_all_button"
+msgid "Scan All"
+msgstr "Escanear todo"
+
+msgctxt "model:ir.model.button,string:shipment_out_return_scan_button"
+msgid "Scan"
+msgstr "Escanear"
+
+msgctxt "model:ir.model.button,string:shipment_out_scan_all_button"
+msgid "Scan All"
+msgstr "Escanear todo"
+
+msgctxt "model:ir.model.button,string:shipment_out_scan_button"
+msgid "Scan"
+msgstr "Escanear"
+
+msgctxt "model:ir.model.button,string:shipment_return_in_scan_button"
+msgid "Scan"
+msgstr "Escanear"
 
 msgctxt "model:res.group,name:group_stock_scan_all"
 msgid "Stock Scan All"
