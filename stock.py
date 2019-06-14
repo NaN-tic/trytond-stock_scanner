@@ -4,6 +4,8 @@ from trytond.model import ModelView, fields
 from trytond.pyson import Bool, Eval, If, And
 from trytond.pool import Pool, PoolMeta
 from trytond.modules.stock.move import STATES
+from operator import itemgetter
+import datetime
 
 
 __all__ = ['Configuration', 'Move', 'ShipmentIn',
@@ -311,6 +313,18 @@ class ShipmentIn(StockScanMixin, metaclass=PoolMeta):
     def receive(cls, shipments):
         cls.set_scanned_quantity_as_quantity(shipments, 'incoming_moves')
         super(ShipmentIn, cls).receive(shipments)
+
+    def get_pending_moves(self, name):
+        moves = [move for move in self.get_pick_moves() if move.pending_quantity > 0]
+        tuples = []
+        for move in moves:
+            if move.origin and hasattr(move.origin, 'purchase'):
+                tuples.append((move, move.origin.purchase.purchase_date))
+            else:
+                tuples.append((move, datetime.date.today()))
+        tuples = sorted(tuples, key=itemgetter(1))
+        moves = [x[0].id for x in tuples]
+        return moves
 
 
 class ShipmentInReturn(ShipmentIn, metaclass=PoolMeta):
