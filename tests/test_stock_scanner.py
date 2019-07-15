@@ -4,29 +4,15 @@
 import unittest
 import doctest
 import trytond.tests.test_tryton
-from trytond.tests.test_tryton import test_view, test_depends
+from trytond.tests.test_tryton import ModuleTestCase
 from trytond.tests.test_tryton import doctest_setup, doctest_teardown
 
 
-class StockScannerTestCase(unittest.TestCase):
+class StockScannerTestCase(ModuleTestCase):
     '''
     Test Stock Scanner module.
     '''
-
-    def setUp(self):
-        trytond.tests.test_tryton.install_module('stock_scanner')
-
-    def test0005views(self):
-        '''
-        Test views.
-        '''
-        test_view('stock_scanner')
-
-    def test0006depends(self):
-        '''
-        Test depends.
-        '''
-        test_depends()
+    module = 'stock_scanner'
 
 
 def suite():
