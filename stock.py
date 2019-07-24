@@ -196,7 +196,6 @@ class StockScanMixin(object):
             product = shipment.scanned_product
             if not product or shipment.scanned_quantity <= 0:
                 continue
-
             shipment.process_moves(shipment.get_matching_moves())
             shipment.clear_scan_values()
             shipment.save()  # TODO: move to save multiple shipments?
@@ -222,7 +221,6 @@ class StockScanMixin(object):
         if (not self.scanned_quantity or not self.scanned_uom
                 or self.scanned_quantity < self.scanned_uom.rounding):
             return []
-
         if not moves:
             move = self.get_processed_move()
             move.save()
@@ -333,7 +331,7 @@ class ShipmentOut(StockScanMixin):
         return self.inventory_moves
 
     def get_processed_move(self):
-        move = super(ShipmentIn, self).get_processed_move()
+        move = super(ShipmentOut, self).get_processed_move()
         move.from_location = self.warehouse_storage
         move.to_location = self.warehouse_output
         # TODO: add to scanner or improve it
