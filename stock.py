@@ -4,11 +4,13 @@ from trytond.model import ModelView, fields
 from trytond.pyson import Bool, Eval, If, And
 from trytond.pool import Pool, PoolMeta
 from trytond.modules.stock.move import STATES
+from operator import itemgetter
+import datetime
 
 
 __all__ = ['Configuration', 'Move', 'ShipmentIn',
     'ShipmentInReturn', 'ShipmentOut', 'ShipmentOutReturn']
-__metaclass__ = PoolMeta
+
 
 MIXIN_STATES = {
     'readonly': ~Eval('state').in_(['waiting', 'draft']),
@@ -17,6 +19,8 @@ MIXIN_STATES = {
 
 class Configuration:
     __name__ = 'stock.configuration'
+    __metaclass__ = PoolMeta
+
     scanner_on_shipment_in = fields.Boolean('Scanner on Supplier Shipments?')
     scanner_on_shipment_in_return = fields.Boolean(
         'Scanner on Supplier Return Shipments?')
@@ -41,6 +45,7 @@ class Configuration:
 
 class Move:
     __name__ = 'stock.move'
+    __metaclass__ = PoolMeta
     scanned_quantity = fields.Float('Scanned Quantity',
         digits=(16, Eval('unit_digits', 2)), states=STATES,
         depends=['state', 'unit_digits'])
@@ -60,6 +65,14 @@ class Move:
             quantity[move.id] = move.uom.round(
                 move.quantity - (move.scanned_quantity or 0.0))
         return quantity
+
+    @classmethod
+    def copy(cls, moves, default=None):
+        if default is None:
+            default = {}
+        default = default.copy()
+        default['scanned_quantity'] = None
+        return super(Move, cls).copy(moves, default=default)
 
 
 class StockScanMixin(object):
@@ -124,6 +137,10 @@ class StockScanMixin(object):
         Config = pool.get('stock.configuration')
         return Config.scanner_on_shipment_type(cls.__name__)
 
+    @staticmethod
+    def default_scanned_product_unit_digits():
+        return 2
+
     @classmethod
     def get_scanner_enabled(cls, shipments, name):
         scanner_enabled = cls.default_scanner_enabled()
@@ -177,10 +194,6 @@ class StockScanMixin(object):
                 moves.append(move)
         return moves
 
-    @staticmethod
-    def default_scanned_product_unit_digits():
-        return 2
-
     @fields.depends('scanned_uom', 'scanned_product')
     def on_change_with_scanned_product_unit_digits(self, name=None):
         if self.scanned_uom:
@@ -196,6 +209,7 @@ class StockScanMixin(object):
             product = shipment.scanned_product
             if not product or shipment.scanned_quantity <= 0:
                 continue
+
             shipment.process_moves(shipment.get_matching_moves())
             shipment.clear_scan_values()
             shipment.save()  # TODO: move to save multiple shipments?
@@ -220,7 +234,8 @@ class StockScanMixin(object):
 
         if (not self.scanned_quantity or not self.scanned_uom
                 or self.scanned_quantity < self.scanned_uom.rounding):
-            return []
+            return
+
         if not moves:
             move = self.get_processed_move()
             move.save()
@@ -234,7 +249,7 @@ class StockScanMixin(object):
                     < move.uom.rounding):
                 move.scanned_quantity = move.quantity
                 move.save()
-                return [move]
+                return move
 
         # Find move with the nearest pending quantity
         moves.sort(key=lambda m: m.internal_quantity)
@@ -245,9 +260,14 @@ class StockScanMixin(object):
             found_move = move
             if move.quantity > scanned_qty_move_uom:
                 break
-        found_move.scanned_quantity = scanned_qty_move_uom
-        found_move.save()
-        return [found_move]
+
+        if found_move:
+            if found_move.scanned_quantity:
+                found_move.scanned_quantity += scanned_qty_move_uom
+            else:
+                found_move.scanned_quantity = scanned_qty_move_uom
+            found_move.save()
+            return found_move
 
     def clear_scan_values(self):
         self.scanned_product = None
@@ -303,6 +323,18 @@ class ShipmentIn(StockScanMixin):
     def receive(cls, shipments):
         cls.set_scanned_quantity_as_quantity(shipments, 'incoming_moves')
         super(ShipmentIn, cls).receive(shipments)
+
+    def get_pending_moves(self, name):
+        moves = [move for move in self.get_pick_moves() if move.pending_quantity > 0]
+        tuples = []
+        for move in moves:
+            if move.origin and hasattr(move.origin, 'purchase'):
+                tuples.append((move, move.origin.purchase.purchase_date))
+            else:
+                tuples.append((move, datetime.date.today()))
+        tuples = sorted(tuples, key=itemgetter(1))
+        moves = [x[0].id for x in tuples]
+        return moves
 
 
 class ShipmentInReturn(ShipmentIn):

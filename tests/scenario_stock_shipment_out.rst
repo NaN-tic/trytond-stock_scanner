@@ -143,20 +143,20 @@ There is a shipment waiting::
     >>> move.pending_quantity
     10.0
 
-Make 1 unit of the product available::
+Make 10 unit of the product available::
 
     >>> Inventory = Model.get('stock.inventory')
     >>> inventory = Inventory()
     >>> inventory.location = storage_loc
     >>> inventory_line = inventory.lines.new()
     >>> inventory_line.product = product
-    >>> inventory_line.quantity = 1
+    >>> inventory_line.quantity = 10
     >>> inventory_line.expected_quantity = 0.0
     >>> inventory.click('confirm')
     >>> inventory.state
     u'done'
 
-Scan one unit of the shipment and assign it::
+Scan some units of the shipment and assign it::
 
     >>> shipment_out.scanned_product = product
     >>> shipment_out.scanned_quantity = 1.0
@@ -168,6 +168,19 @@ Scan one unit of the shipment and assign it::
     True
     >>> shipment_out.scanned_product == None
     True
+    >>> shipment_out.scanned_product = product
+    >>> shipment_out.scanned_quantity = 1.0
+    >>> shipment_out.click('scan')
+    >>> move, = shipment_out.pending_moves
+    >>> move.scanned_quantity == 2.0
+    True
+    >>> move.pending_quantity == 8.0
+    True
+    >>> shipment_out.scanned_product = product
+    >>> shipment_out.scanned_quantity = 8.0
+    >>> shipment_out.click('scan')
+    >>> len(shipment_out.pending_moves) == 0
+    True
     >>> shipment_out.click('assign_try')
     True
     >>> shipment_out.reload()
@@ -175,11 +188,6 @@ Scan one unit of the shipment and assign it::
     1
     >>> len(shipment_out.inventory_moves)
     1
-    >>> move, = shipment_out.inventory_moves
-    >>> move.pending_quantity == 0.0
-    True
-    >>> move.quantity == 1.0
-    True
     >>> move, = shipment_out.outgoing_moves
     >>> move.quantity == 10.0
     True
