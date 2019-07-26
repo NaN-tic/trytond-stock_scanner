@@ -352,7 +352,7 @@ class ShipmentOutReturn(ShipmentOut):
         return self.incoming_moves
 
     def get_processed_move(self):
-        move = super(ShipmentIn, self).get_processed_move()
+        move = super(ShipmentOutReturn, self).get_processed_move()
         move.from_location = self.customer_location
         move.to_location = self.warehouse_input
         # TODO: add to scanner or improve it
