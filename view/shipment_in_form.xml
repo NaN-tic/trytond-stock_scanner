@@ -26,7 +26,7 @@
                 string="Reset Scanned Quantities"
                 icon="tryton-refresh"/>
             <button name="scan_all" string="Scan All"
-                icon="tryton-dialog-warning"/>
+                icon="tryton-warning"/>
         </group>
         <newline/>
     </xpath>
