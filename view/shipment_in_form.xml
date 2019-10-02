@@ -22,11 +22,8 @@
         position="before">
         <group id="scan_buttons" colspan="2" col="3">
             <label id="spacing" xexpand="1"/>
-            <button name="reset_scanned_quantities"
-                string="Reset Scanned Quantities"
-                icon="tryton-refresh"/>
-            <button name="scan_all" string="Scan All"
-                icon="tryton-warning"/>
+            <button name="reset_scanned_quantities"/>
+            <button name="scan_all"/>
         </group>
         <newline/>
     </xpath>

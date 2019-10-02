@@ -119,9 +119,11 @@ class StockScanMixin(object):
                     'invisible': ~And(
                             Eval('pending_moves', False),
                             Eval('state').in_(['waiting', 'draft'])),
+                    'icon': 'tryton-refresh'
                     },
                 'scan_all': {
                     'invisible': ~Eval('pending_moves', False),
+                    'icon': 'tryton-warning',
                     },
                 })
 

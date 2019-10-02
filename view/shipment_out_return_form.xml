@@ -13,16 +13,12 @@
                 <field name="scanned_uom"/>
             </group>
             <label id="spacing" string="" colspan="2"/>
-            <button name="scan" string="Scan" colspan="2"/>
-            <field name="pending_moves" colspan="4"
-               view_ids="stock_scanner.move_view_tree_pending,stock_scanner.move_view_form_pending"/>
+            <button name="scan" colspan="2"/>
+            <field name="pending_moves" colspan="4" view_ids="stock_scanner.move_view_tree_pending,stock_scanner.move_view_form_pending"/>
         </page>
     </xpath>
     <xpath expr="//group[@id='buttons']" position="inside">
-        <button name="reset_scanned_quantities"
-            string="Reset Scanned Quantities"
-            icon="tryton-refresh"/>
-        <button name="scan_all" string="Scan All"
-            icon="tryton-warning"/>
+        <button name="reset_scanned_quantities"/>
+        <button name="scan_all"/>
     </xpath>
 </data>
