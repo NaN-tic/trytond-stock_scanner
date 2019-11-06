@@ -56,6 +56,12 @@ class Move(metaclass=PoolMeta):
     def default_scanned_quantity():
         return 0.
 
+    def get_quantity_for_value(self):
+        ShipmentIn = Pool().get('stock.shipment.in')
+        if isinstance(self.shipment, ShipmentIn):
+            return self.scanned_quantity
+        return self.quantity
+
     @classmethod
     def get_pending_quantity(cls, moves, name):
         quantity = {}
