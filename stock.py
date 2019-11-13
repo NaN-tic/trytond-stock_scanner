@@ -211,6 +211,18 @@ class StockScanMixin(object):
             shipment.clear_scan_values()
             shipment.save()  # TODO: move to save multiple shipments?
 
+    @classmethod
+    @ModelView.button
+    def scan_all(cls, shipments):
+        for shipment in shipments:
+            pending_moves = shipment.pending_moves[:]
+            for move in pending_moves:
+                shipment.scanned_product = move.product
+                shipment.scanned_quantity = move.quantity
+                shipment.scanned_uom = move.uom
+                shipment.process_moves([move])
+        cls.save(shipments)
+
     def get_processed_move(self):
         pool = Pool()
         Move = pool.get('stock.move')
@@ -240,9 +252,9 @@ class StockScanMixin(object):
 
         for move in moves:
             # find move with the same quantity
-            scanned_qty_move_uom = Uom.compute_qty(self.scanned_uom,
+            scanned_qty_in_move_uom = Uom.compute_qty(self.scanned_uom,
                 self.scanned_quantity, move.uom, round=False)
-            if (abs(move.pending_quantity - scanned_qty_move_uom)
+            if (abs(move.pending_quantity - scanned_qty_in_move_uom)
                     < move.uom.rounding):
                 move.scanned_quantity = move.quantity
                 move.save()
@@ -282,13 +294,7 @@ class StockScanMixin(object):
                     'scanned_quantity': 0.,
                     })
 
-    @classmethod
-    @ModelView.button
-    def scan_all(cls, shipments):
-        for shipment in shipments:
-            for move in shipment.pending_moves:
-                move.scanned_quantity = move.quantity
-                move.save()
+
 
     @classmethod
     def set_scanned_quantity_as_quantity(cls, shipments, moves_field_name):
