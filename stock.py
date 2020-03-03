@@ -120,6 +120,9 @@ class StockScanMixin(object):
         cls._error_messages.update({
                 'product_not_pending': ('This product is not pending to be '
                     'scanned in this order.'),
+                'scan_all': ('Are you sure you want to scan all pending moves '
+                    'and leave them as received? This action cannot be '
+                    'undone.'),
                 })
         cls._buttons.update({
                 'scan': {
@@ -224,6 +227,8 @@ class StockScanMixin(object):
     @ModelView.button
     def scan_all(cls, shipments):
         for shipment in shipments:
+            cls.raise_user_warning('%s.confirm_scan_all' % shipment,
+                'scan_all')
             pending_moves = shipment.pending_moves[:]
             for move in pending_moves:
                 shipment.scanned_product = move.product
