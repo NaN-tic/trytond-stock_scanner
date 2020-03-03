@@ -4,6 +4,8 @@ from trytond.model import ModelView, fields
 from trytond.pyson import Bool, Eval, If, And
 from trytond.pool import Pool, PoolMeta
 from trytond.modules.stock.move import STATES
+from trytond.exceptions import UserWarning
+from trytond.i18n import gettext
 from operator import itemgetter
 import datetime
 
@@ -214,7 +216,13 @@ class StockScanMixin(object):
     @classmethod
     @ModelView.button
     def scan_all(cls, shipments):
+        pool = Pool()
+        Warning = pool.get('res.user.warning')
         for shipment in shipments:
+            warning_name = 'scan_all,%s' % shipment
+            if Warning.check(warning_name):
+                raise UserWarning(warning_name,
+                    gettext('stock_scanner.msg_scan_all'))
             pending_moves = shipment.pending_moves[:]
             for move in pending_moves:
                 shipment.scanned_product = move.product
