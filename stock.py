@@ -130,11 +130,7 @@ class StockScanMixin(object):
                             Eval('pending_moves', False),
                             Bool(Eval('scanned_product'))),
                     },
-                'reset_scanned_quantities': {
-                    'invisible': ~And(
-                            Eval('pending_moves', False),
-                            Eval('state').in_(['waiting', 'draft'])),
-                    },
+                'reset_scanned_quantities': {},
                 'scan_all': {
                     'invisible': ~Eval('pending_moves', False),
                     },
@@ -302,7 +298,7 @@ class StockScanMixin(object):
         Move = Pool().get('stock.move')
         all_pending_moves = []
         for shipment in shipments:
-            all_pending_moves.extend(shipment.pending_moves)
+            all_pending_moves.extend(shipment.incoming_moves)
         if all_pending_moves:
             Move.write(all_pending_moves, {
                     'scanned_quantity': 0.,
