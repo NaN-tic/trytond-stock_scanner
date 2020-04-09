@@ -122,15 +122,16 @@ class StockScanMixin(object):
                     'invisible': ~And(
                             Eval('pending_moves', False),
                             Bool(Eval('scanned_product'))),
-                    },
+                },
                 'reset_scanned_quantities': {
-                    'icon': 'tryton-refresh'
-                    },
+                    'icon': 'tryton-refresh',
+                    'invisible': ~Eval('state').in_(['waiting', 'draft'])
+                },
                 'scan_all': {
-                    'invisible': ~Eval('pending_moves', False),
                     'icon': 'tryton-warning',
-                    },
-                })
+                    'invisible': ~Eval('state').in_(['waiting', 'draft'])
+                },
+        })
 
     @classmethod
     def default_scanner_enabled(cls):
