@@ -121,8 +121,7 @@ class StockScanMixin(object):
                 'product_not_pending': ('This product is not pending to be '
                     'scanned in this order.'),
                 'scan_all': ('Are you sure you want to scan all pending moves '
-                    'and leave them as received? This action cannot be '
-                    'undone.'),
+                    'and leave them as received?'),
                 })
         cls._buttons.update({
                 'scan': {
@@ -130,9 +129,11 @@ class StockScanMixin(object):
                             Eval('pending_moves', False),
                             Bool(Eval('scanned_product'))),
                     },
-                'reset_scanned_quantities': {},
+                'reset_scanned_quantities': {
+                    'invisible': ~Eval('state').in_(['waiting', 'draft'])
+                },
                 'scan_all': {
-                    'invisible': ~Eval('pending_moves', False),
+                    'invisible': ~Eval('state').in_(['waiting', 'draft']),
                     },
                 })
 
