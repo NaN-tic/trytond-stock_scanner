@@ -1,6 +1,6 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-from trytond.model import ModelView, fields
+from trytond.model import Workflow, ModelView, fields
 from trytond.pyson import Bool, Eval, If, And
 from trytond.pool import Pool, PoolMeta
 from trytond.modules.stock.move import STATES
@@ -52,7 +52,7 @@ class Move(metaclass=PoolMeta):
     pending_quantity = fields.Function(fields.Float('Pending Quantity',
             digits=(16, Eval('unit_digits', 2)), depends=['unit_digits'],
             help='Quantity pending to be scanned'),
-        'get_pending_quantity')
+        'get_pending_quantity', searcher='search_pending_quantity')
 
     @staticmethod
     def default_scanned_quantity():
@@ -73,12 +73,34 @@ class Move(metaclass=PoolMeta):
         return quantity
 
     @classmethod
+    def search_pending_quantity(cls, name, domain):
+        table = cls.__table__()
+        _, operator, _ = domain
+        if operator == '<':
+            sql_where = (table.quantity < table.scanned_quantity)
+        elif operator == '=':
+            sql_where = (table.quantity == table.scanned_quantity)
+        else:
+            sql_where = (table.quantity > table.scanned_quantity)
+        query = table.select(table.id, where=sql_where)
+        return [('id', 'in', query)]
+
+    @classmethod
     def copy(cls, moves, default=None):
         if default is None:
             default = {}
         default = default.copy()
-        default['scanned_quantity'] = None
+        default['scanned_quantity'] = cls.default_scanned_quantity()
         return super(Move, cls).copy(moves, default=default)
+
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('draft')
+    def draft(cls, moves):
+        super(Move, cls).draft(moves)
+        cls.write(moves, {
+                'scanned_quantity': cls.default_scanned_quantity(),
+                })
 
 
 class StockScanMixin(object):
@@ -301,8 +323,6 @@ class StockScanMixin(object):
             Move.write(all_pending_moves, {
                     'scanned_quantity': 0.,
                     })
-
-
 
     @classmethod
     def set_scanned_quantity_as_quantity(cls, shipments, moves_field_name):
