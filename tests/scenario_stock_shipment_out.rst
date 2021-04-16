@@ -180,6 +180,7 @@ Scan one unit of the shipment and assign it::
 
 Set the state as Done::
 
+    >>> shipment_out.click('pick')
     >>> shipment_out.click('pack')
     >>> shipment_out.click('done')
     >>> len(shipment_out.outgoing_moves)
