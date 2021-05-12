@@ -11,7 +11,7 @@ import datetime
 
 
 __all__ = ['Configuration', 'Move', 'ShipmentIn',
-    'ShipmentInReturn', 'ShipmentOut', 'ShipmentOutReturn']
+    'ShipmentOut', 'ShipmentOutReturn']
 
 
 MIXIN_STATES = {
@@ -365,23 +365,6 @@ class ShipmentIn(StockScanMixin, metaclass=PoolMeta):
         tuples = sorted(tuples, key=itemgetter(1))
         moves = [x[0].id for x in tuples]
         return moves
-
-
-class ShipmentInReturn(ShipmentIn, metaclass=PoolMeta):
-    __name__ = 'stock.shipment.in.return'
-
-    def get_processed_move(self):
-        move = super(ShipmentInReturn, self).get_processed_move()
-        move.from_location = self.from_location
-        move.to_location = self.to_location
-        # TODO: add to scanner or improve it
-        move.unit_price = move.product.cost_price
-        return move
-
-    @classmethod
-    def wait(cls, shipments):
-        cls.set_scanned_quantity_as_quantity(shipments, 'outgoing_moves')
-        super(ShipmentInReturn, cls).wait(shipments)
 
 
 class ShipmentOut(StockScanMixin, metaclass=PoolMeta):

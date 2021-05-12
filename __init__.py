@@ -9,7 +9,6 @@ def register():
         Configuration,
         Move,
         ShipmentIn,
-        ShipmentInReturn,
         ShipmentOut,
         ShipmentOutReturn,
         module='stock_scanner', type_='model')
