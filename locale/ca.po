@@ -10,10 +10,6 @@ msgctxt "field:stock.configuration,scanner_on_shipment_in:"
 msgid "Scanner on Supplier Shipments?"
 msgstr "Escanejat a albarans de proveïdor?"
 
-msgctxt "field:stock.configuration,scanner_on_shipment_in_return:"
-msgid "Scanner on Supplier Return Shipments?"
-msgstr "Escanejat a devolucions a proveïdor?"
-
 msgctxt "field:stock.configuration,scanner_on_shipment_out:"
 msgid "Scanner on Customer Shipments?"
 msgstr "Escanejat albarans de client?"
@@ -202,15 +198,6 @@ msgstr "Quantitat del producte escanejat"
 msgctxt "model:ir.model.button,string:shipment_in_reset_button"
 msgid "Reset Scanned Quantities"
 msgstr "Reestableix quantitats escanejades"
-
-msgctxt ""
-"model:ir.model.button,string:shipment_in_return_reset_scanned_quantities_button"
-msgid "Reset Scanned Quantities"
-msgstr "Reestableix quantitats escanejades"
-
-msgctxt "model:ir.model.button,string:shipment_in_return_scan_all_button"
-msgid "Scan All"
-msgstr "Escaneja tot"
 
 msgctxt "model:ir.model.button,string:shipment_in_scan_all_button"
 msgid "Scan All"
