@@ -106,7 +106,10 @@ class StockPickingShipmentOut(Wizard):
         pool = Pool()
         Shipment = pool.get('stock.shipment.out')
 
-        # TODO change shipment state
+        shipment = Shipment(self.scan.shipment)
+        Shipment.assign([shipment])
+        Shipment.pack([shipment])
+
         return 'result'
 
     def default_scan(self, fields):
