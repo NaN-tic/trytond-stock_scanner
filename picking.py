@@ -16,8 +16,7 @@ class StockPickingShipmentOutAsk(ModelView):
         pool = Pool()
         Shipment = pool.get('stock.shipment.out')
         return [(s.id, s.rec_name) for s in Shipment.search([
-            # ('state', '=', 'assigned'),
-            ('state', '=', 'waiting'),
+            ('state', '=', 'assigned'),
             ])]
 
 
@@ -25,7 +24,6 @@ class StockPickingShipmentOutScan(ModelView):
     'Stock Picking Shipment Out Scan'
     __name__ = 'stock.picking.shipment.out.scan'
     shipment = fields.Many2One('stock.shipment.out', 'Shipment', readonly=True)
-    # pending_moves = fields.One2Many('stock.move', None, 'Pending Moves', readonly=True)
     product = fields.Many2One('product.product', 'Product', readonly=True)
     to_pick = fields.Char('To pick')
     pending_moves = fields.Text('APP Pending Moves', readonly=True)
@@ -85,11 +83,8 @@ class StockPickingShipmentOut(Wizard):
             shipment = Shipment(shipment.id)
         else:
             for move in shipment.pending_moves:
-                # TODO found product by party_code?
-                if move.product.party_code == to_pick:
+                if move.matches_scan(to_pick):
                     self.scan.product = move.product
-                    # TODO set quantity to 1 = pick one product.
-                    # TO remove and uncomment before lines
                     shipment.scanned_product = move.product
                     shipment.scanned_quantity = 1
                     shipment.on_change_scanned_product()
@@ -127,8 +122,7 @@ class StockPickingShipmentOut(Wizard):
             shipment = Shipment(self.ask.to_pick)
         else:
             shipments = Shipment.search([
-                # ('state', '=', 'assigned'),
-                ('state', '=', 'waiting'),
+                ('state', '=', 'assigned'),
                 ('number', '=', self.ask.shipment),
                 ], limit=1)
             if not shipments:
@@ -146,7 +140,7 @@ class StockPickingShipmentOut(Wizard):
             locations_move.setdefault(move.from_location, [])
             locations_move[move.from_location].append(move)
 
-        for location in sorted(locations_move):
+        for location in sorted(locations_move, key=lambda x: x.name):
             if location not in storage_locations:
                 pending_moves.append(
                     u'<div align="left">'
