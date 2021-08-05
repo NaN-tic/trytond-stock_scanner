@@ -54,13 +54,6 @@ class Move(metaclass=PoolMeta):
             help='Quantity pending to be scanned'),
         'get_pending_quantity', searcher='search_pending_quantity')
 
-    @classmethod
-    def __setup__(cls):
-        super(Move, cls).__setup__()
-        # We need to delete 'quantity' from _deny_modify_assigned to be able to
-        # use set_scanned_quantity_as_quantity function in pack function.
-        cls._deny_modify_assigned.remove('quantity')
-
     @staticmethod
     def default_scanned_quantity():
         return 0.
@@ -401,7 +394,11 @@ class ShipmentOut(StockScanMixin, metaclass=PoolMeta):
 
     @classmethod
     def pack(cls, shipments):
+        cls.wait(shipments)
+        cls.draft(shipments)
         cls.set_scanned_quantity_as_quantity(shipments, 'inventory_moves')
+        cls.wait(shipments)
+        cls.assign_try(shipments)
         return super(ShipmentOut, cls).pack(shipments)
 
 
