@@ -15,7 +15,7 @@ __all__ = ['Configuration', 'Move', 'ShipmentIn',
 
 
 MIXIN_STATES = {
-    'readonly': ~Eval('state').in_(['waiting', 'draft']),
+    'readonly': ~Eval('state').in_(['waiting', 'draft', 'assigned']),
     }
 
 
@@ -102,6 +102,14 @@ class Move(metaclass=PoolMeta):
                 'scanned_quantity': cls.default_scanned_quantity(),
                 })
 
+    def matches_scan(self, input_):
+        if self.product.code == input_:
+            return True
+        for identifier in self.product.identifiers:
+            if identifier.code == input_:
+                return True
+        return False
+
 
 class StockScanMixin(object):
     scanner_enabled = fields.Function(fields.Boolean('Scanner Enabled'),
@@ -109,7 +117,8 @@ class StockScanMixin(object):
     pending_moves = fields.Function(fields.One2Many('stock.move', None,
             'Pending Moves', states={
                 'invisible': (~Eval('scanner_enabled', False)
-                    | ~Eval('state', 'draft').in_(['waiting', 'draft'])),
+                    | ~Eval('state', 'draft').in_(['waiting', 'draft',
+                            'assigned'])),
                 }, depends=['scanner_enabled', 'state'],
             help='List of pending products to be scan.'),
         'get_pending_moves')
@@ -147,11 +156,13 @@ class StockScanMixin(object):
                 },
                 'reset_scanned_quantities': {
                     'icon': 'tryton-refresh',
-                    'invisible': ~Eval('state').in_(['waiting', 'draft'])
+                    'invisible': ~Eval('state').in_(['waiting', 'draft',
+                            'assigned'])
                 },
                 'scan_all': {
                     'icon': 'tryton-warning',
-                    'invisible': ~Eval('state').in_(['waiting', 'draft'])
+                    'invisible': ~Eval('state').in_(['waiting', 'draft',
+                            'assigned'])
                 },
         })
 
@@ -382,9 +393,11 @@ class ShipmentOut(StockScanMixin, metaclass=PoolMeta):
         return move
 
     @classmethod
-    def assign_try(cls, shipments):
+    def pack(cls, shipments):
+        cls.wait(shipments)
         cls.set_scanned_quantity_as_quantity(shipments, 'inventory_moves')
-        return super(ShipmentOut, cls).assign_try(shipments)
+        cls.assign_try(shipments)
+        return super(ShipmentOut, cls).pack(shipments)
 
 
 class ShipmentOutReturn(ShipmentOut, metaclass=PoolMeta):
