@@ -106,7 +106,7 @@ class Move(metaclass=PoolMeta):
         if self.product.code == input_:
             return True
         for identifier in self.product.identifiers:
-            if self.product.code == input_:
+            if identifier.code == input_:
                 return True
         return False
 
