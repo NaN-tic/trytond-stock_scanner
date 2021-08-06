@@ -395,9 +395,7 @@ class ShipmentOut(StockScanMixin, metaclass=PoolMeta):
     @classmethod
     def pack(cls, shipments):
         cls.wait(shipments)
-        cls.draft(shipments)
         cls.set_scanned_quantity_as_quantity(shipments, 'inventory_moves')
-        cls.wait(shipments)
         cls.assign_try(shipments)
         return super(ShipmentOut, cls).pack(shipments)
 
