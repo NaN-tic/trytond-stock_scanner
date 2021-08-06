@@ -152,24 +152,31 @@ Make 1 unit of the product available::
 
 Scan one unit of the shipment and assign it::
 
+    >>> shipment_out.click('assign_try')
+    False
+    >>> shipment_out.reload()
+    >>> move, _ = sorted(shipment_out.pending_moves, key=lambda x: x.quantity)
+    >>> move.quantity == 1.0
+    True
+    >>> move.pending_quantity == 1.0
+    True
     >>> shipment_out.scanned_product = product
     >>> shipment_out.scanned_quantity = 1.0
     >>> shipment_out.click('scan')
-    >>> move, = shipment_out.pending_moves
+    >>> shipment_out.reload()
+    >>> move.reload()
     >>> move.scanned_quantity == 1.0
     True
-    >>> move.pending_quantity == 9.0
+    >>> move.pending_quantity == 0.0
     True
     >>> shipment_out.scanned_product == None
-    True
-    >>> shipment_out.click('assign_try')
     True
     >>> shipment_out.reload()
     >>> len(shipment_out.outgoing_moves)
     1
     >>> len(shipment_out.inventory_moves)
-    1
-    >>> move, = shipment_out.inventory_moves
+    2
+    >>> move, _ = sorted(shipment_out.inventory_moves, key=lambda x: x.quantity)
     >>> move.pending_quantity == 0.0
     True
     >>> move.quantity == 1.0
@@ -182,11 +189,12 @@ Set the state as Done::
 
     >>> shipment_out.click('pick')
     >>> shipment_out.click('pack')
+    >>> move, _ = sorted(shipment_out.inventory_moves, key=lambda x: x.quantity)
     >>> shipment_out.click('done')
     >>> len(shipment_out.outgoing_moves)
     1
     >>> len(shipment_out.inventory_moves)
-    1
+    2
     >>> shipment_out.inventory_moves[0].state
     'done'
     >>> shipment_out.outgoing_moves[0].state

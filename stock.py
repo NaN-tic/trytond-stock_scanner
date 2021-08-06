@@ -3,6 +3,7 @@
 from trytond.model import Workflow, ModelView, fields
 from trytond.pyson import Bool, Eval, If, And
 from trytond.pool import Pool, PoolMeta
+from trytond.model.exceptions import AccessError
 from trytond.modules.stock.move import STATES
 from trytond.exceptions import UserWarning
 from trytond.i18n import gettext
@@ -54,6 +55,14 @@ class Move(metaclass=PoolMeta):
             help='Quantity pending to be scanned'),
         'get_pending_quantity', searcher='search_pending_quantity')
 
+    @classmethod
+    def __setup__(cls):
+        super(Move, cls).__setup__()
+        # We need to delete 'quantity' from _deny_modify_assigned to be able to
+        # use set_scanned_quantity_as_quantity function in pack function.
+        if 'quantity' in cls._deny_modify_assigned:
+            cls._deny_modify_assigned.remove('quantity')
+
     @staticmethod
     def default_scanned_quantity():
         return 0.
@@ -84,6 +93,22 @@ class Move(metaclass=PoolMeta):
             sql_where = (table.quantity > table.scanned_quantity)
         query = table.select(table.id, where=sql_where)
         return [('id', 'in', query)]
+
+    @classmethod
+    def write(cls, *args):
+        actions = iter(args)
+        for moves, values in zip(actions, actions):
+            # Ensure quantity is not set to a value greater than the one
+            # assigned, given that we remove 'quantity' from
+            # cls._deny_modify_assigned in __setup__
+            if 'quantity' in values:
+                for move in moves:
+                    if (move.state == 'assigned'
+                            and values['quantity'] > move.quantity):
+                        raise AccessError(
+                            gettext('stock.msg_move_modify_assigned',
+                                move=move.rec_name))
+        super(Move, cls).write(*args)
 
     @classmethod
     def copy(cls, moves, default=None):
@@ -366,7 +391,8 @@ class ShipmentIn(StockScanMixin, metaclass=PoolMeta):
         super(ShipmentIn, cls).receive(shipments)
 
     def get_pending_moves(self, name):
-        moves = [move for move in self.get_pick_moves() if move.pending_quantity > 0]
+        moves = [move for move in self.get_pick_moves() if
+            move.pending_quantity > 0]
         tuples = []
         for move in moves:
             if move.origin and hasattr(move.origin, 'purchase'):
@@ -394,9 +420,7 @@ class ShipmentOut(StockScanMixin, metaclass=PoolMeta):
 
     @classmethod
     def pack(cls, shipments):
-        cls.wait(shipments)
         cls.set_scanned_quantity_as_quantity(shipments, 'inventory_moves')
-        cls.assign_try(shipments)
         return super(ShipmentOut, cls).pack(shipments)
 
 
