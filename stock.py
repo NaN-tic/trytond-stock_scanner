@@ -48,11 +48,9 @@ class Configuration(metaclass=PoolMeta):
 class Move(metaclass=PoolMeta):
     __name__ = 'stock.move'
     scanned_quantity = fields.Float('Scanned Quantity',
-        digits=(16, Eval('unit_digits', 2)), states=STATES,
-        depends=['state', 'unit_digits'])
+        digits='uom', states=STATES, depends=['state'])
     pending_quantity = fields.Function(fields.Float('Pending Quantity',
-            digits=(16, Eval('unit_digits', 2)), depends=['unit_digits'],
-            help='Quantity pending to be scanned'),
+        digits='uom', help='Quantity pending to be scanned'),
         'get_pending_quantity', searcher='search_pending_quantity')
 
     @classmethod
@@ -161,13 +159,9 @@ class StockScanMixin(object):
         help='Scan the code of the next product.')
     scanned_uom = fields.Many2One('product.uom', 'Scanned UoM', states={
             'readonly': True,
-            })
-    scanned_product_unit_digits = fields.Function(
-        fields.Integer('Scanned Product Unit Digits'),
-        'on_change_with_scanned_product_unit_digits')
-    scanned_quantity = fields.Float('Quantity',
-        digits=(16, Eval('scanned_product_unit_digits', 2)),
-        states=MIXIN_STATES, depends=['scanned_product_unit_digits', 'state'],
+        })
+    scanned_quantity = fields.Float('Quantity', 'scanned_uom',
+        states=MIXIN_STATES, depends=['state'],
         help='Quantity of the scanned product.')
 
     @classmethod
@@ -196,10 +190,6 @@ class StockScanMixin(object):
         pool = Pool()
         Config = pool.get('stock.configuration')
         return Config.scanner_on_shipment_type(cls.__name__)
-
-    @staticmethod
-    def default_scanned_product_unit_digits():
-        return 2
 
     @classmethod
     def get_scanner_enabled(cls, shipments, name):
@@ -230,17 +220,10 @@ class StockScanMixin(object):
         scanned_moves = self.get_matching_moves()
         if scanned_moves:
             self.scanned_uom = scanned_moves[0].uom
-
-            self.scanned_product_unit_digits = (
-                self.on_change_with_scanned_product_unit_digits())
             if config.scanner_fill_quantity:
                 self.scanned_quantity = scanned_moves[0].pending_quantity
             return
-
-
         self.scanned_uom = self.scanned_product.default_uom
-        self.scanned_product_unit_digits = (
-            self.scanned_product.default_uom.digits)
 
     def get_matching_moves(self):
         """Get possible scanned move"""
@@ -250,14 +233,6 @@ class StockScanMixin(object):
                     and move.pending_quantity > 0):
                 moves.append(move)
         return moves
-
-    @fields.depends('scanned_uom', 'scanned_product')
-    def on_change_with_scanned_product_unit_digits(self, name=None):
-        if self.scanned_uom:
-            return self.scanned_uom.digits
-        elif self.scanned_product:
-            return self.scanned_product.default_uom.digits
-        return self.default_scanned_product_unit_digits()
 
     @classmethod
     @ModelView.button
@@ -347,6 +322,7 @@ class StockScanMixin(object):
     def clear_scan_values(self):
         self.scanned_product = None
         self.scanned_quantity = None
+        self.scanned_uom = None
 
     @classmethod
     @ModelView.button

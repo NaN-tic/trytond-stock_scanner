@@ -38,10 +38,6 @@ msgctxt "field:stock.shipment.in,scanned_product:"
 msgid "Scanned product"
 msgstr "Producte escanejat"
 
-msgctxt "field:stock.shipment.in,scanned_product_unit_digits:"
-msgid "Scanned Product Unit Digits"
-msgstr "Dígits unitat producte escanejat"
-
 msgctxt "field:stock.shipment.in,scanned_quantity:"
 msgid "Quantity"
 msgstr "Quantitat"
@@ -65,10 +61,6 @@ msgstr "Escanejar productes"
 msgctxt "field:stock.shipment.in.return,scanned_product:"
 msgid "Scanned product"
 msgstr "Producte escanejat"
-
-msgctxt "field:stock.shipment.in.return,scanned_product_unit_digits:"
-msgid "Scanned Product Unit Digits"
-msgstr "Dígits unitat producte escanejat"
 
 msgctxt "field:stock.shipment.in.return,scanned_quantity:"
 msgid "Quantity"
@@ -94,10 +86,6 @@ msgctxt "field:stock.shipment.out,scanned_product:"
 msgid "Scanned product"
 msgstr "Producte escanejat"
 
-msgctxt "field:stock.shipment.out,scanned_product_unit_digits:"
-msgid "Scanned Product Unit Digits"
-msgstr "Dígits unitat producte escanejat"
-
 msgctxt "field:stock.shipment.out,scanned_quantity:"
 msgid "Quantity"
 msgstr "Quantitat"
@@ -121,10 +109,6 @@ msgstr "Escanejar productes"
 msgctxt "field:stock.shipment.out.return,scanned_product:"
 msgid "Scanned product"
 msgstr "Producte escanejat"
-
-msgctxt "field:stock.shipment.out.return,scanned_product_unit_digits:"
-msgid "Scanned Product Unit Digits"
-msgstr "Dígits unitat producte escanejat"
 
 msgctxt "field:stock.shipment.out.return,scanned_quantity:"
 msgid "Quantity"
