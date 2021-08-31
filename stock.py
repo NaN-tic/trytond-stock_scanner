@@ -330,7 +330,7 @@ class StockScanMixin(object):
         Move = Pool().get('stock.move')
         all_pending_moves = []
         for shipment in shipments:
-            all_pending_moves.extend(shipment.incoming_moves)
+            all_pending_moves.extend(shipment.get_pick_moves())
         if all_pending_moves:
             Move.write(all_pending_moves, {
                     'scanned_quantity': 0.,
