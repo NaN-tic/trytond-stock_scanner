@@ -249,8 +249,9 @@ class StockScanMixin(object):
     @classmethod
     @ModelView.button
     def scan_all(cls, shipments):
-        pool = Pool()
-        Warning = pool.get('res.user.warning')
+        Warning = Pool().get('res.user.warning')
+
+        to_save = []
         for shipment in shipments:
             warning_name = 'scan_all,%s' % shipment
             if Warning.check(warning_name):
@@ -262,7 +263,9 @@ class StockScanMixin(object):
                 shipment.scanned_quantity = move.quantity
                 shipment.scanned_uom = move.uom
                 shipment.process_moves([move])
-        cls.save(shipments)
+                shipment.clear_scan_values()
+                to_save.append(shipment)
+        cls.save(to_save)
 
     def get_processed_move(self):
         pool = Pool()
