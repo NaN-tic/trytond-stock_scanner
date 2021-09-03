@@ -2,8 +2,7 @@
 <!-- The COPYRIGHT file at the top level of this repository contains the full
      copyright notices and license terms. -->
 <data>
-    <xpath expr="/form/field[@name='shipment_internal_sequence']"
-             position="after">
+    <xpath expr="/form/field[@name='shipment_internal_sequence']" position="after">
          <group id="scanner" string="Scanning Configuration" colspan="4">
             <label name="scanner_on_shipment_in"/>
             <field name="scanner_on_shipment_in"/>
@@ -15,6 +14,8 @@
             <field name="scanner_on_shipment_out_return"/>
             <label name="scanner_fill_quantity"/>
             <field name="scanner_fill_quantity"/>
+            <label name="scanner_pending_quantity"/>
+            <field name="scanner_pending_quantity"/>
          </group>
     </xpath>
 </data>
