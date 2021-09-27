@@ -135,6 +135,7 @@ class Move(metaclass=PoolMeta):
 
 
 class StockScanMixin(object):
+    __slots__ = ()
     scanner_enabled = fields.Function(fields.Boolean('Scanner Enabled'),
         'get_scanner_enabled')
     pending_moves = fields.Function(fields.One2Many('stock.move', None,
