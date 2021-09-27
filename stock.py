@@ -145,7 +145,7 @@ class StockScanMixin(object):
                             'assigned'])),
                 }, depends=['scanner_enabled', 'state'],
             help='List of pending products to be scan.'),
-        'get_pending_moves')
+        'get_pending_moves', setter='set_pending_moves')
     scannable_products = fields.Function(fields.Many2Many('product.product',
             None, None, 'Scannable Products'),
         'get_scannable_products')
@@ -184,7 +184,8 @@ class StockScanMixin(object):
                     'invisible': ~Eval('state').in_(['waiting', 'draft',
                             'assigned'])
                 },
-        })
+                })
+        cls._scanner_allow_delete = ['stock.shipment.in']
 
     @classmethod
     def default_scanner_enabled(cls):
@@ -199,6 +200,29 @@ class StockScanMixin(object):
 
     def get_pending_moves(self, name):
         return [l.id for l in self.get_pick_moves() if l.pending_quantity > 0]
+
+    @classmethod
+    def set_pending_moves(cls, shipments, name, value):
+        Move = Pool().get('stock.move')
+
+        to_write = []
+        for v in value:
+            action = v[0]
+            # omit "add" action
+            if action == 'write':
+                actions = iter(v[1:])
+                for move_ids, values in zip(actions, actions):
+                    to_write.extend((Move.browse(move_ids), values))
+            elif action == 'delete':
+                if all([shipment for shipment in shipments
+                        if shipment.__name__ in cls._scanner_allow_delete]):
+                    move_ids = v[1]
+                    if move_ids:
+                        # not delete. Set shipment to none to allow pick in other shipment
+                        to_write.extend((Move.browse(move_ids), {'shipment': None}))
+
+        if to_write:
+            Move.write(*to_write)
 
     def get_pick_moves(self):
         return self.moves
@@ -240,7 +264,9 @@ class StockScanMixin(object):
     def scan(cls, shipments):
         for shipment in shipments:
             product = shipment.scanned_product
-            if not product or shipment.scanned_quantity <= 0:
+            scanned_quantity = shipment.scanned_quantity
+            if (not product or not scanned_quantity
+                    or shipment.scanned_quantity <= 0):
                 continue
 
             shipment.process_moves(shipment.get_matching_moves())
