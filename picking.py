@@ -107,6 +107,14 @@ class StockPickingShipmentOut(Wizard):
 
         return 'result'
 
+    def default_ask(self, fields):
+        # reset values in case start first step (select a shipment)
+        self.scan.shipment = None
+        self.scan.product = None
+        self.scan.to_pick = None
+        self.scan.pending_moves = None
+        return {}
+
     def default_scan(self, fields):
         pool = Pool()
         Shipment = pool.get('stock.shipment.out')
