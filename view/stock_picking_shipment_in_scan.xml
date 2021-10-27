@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!-- This file is part stock_picking module for Tryton.
+The COPYRIGHT file at the top level of this repository contains the full copyright notices and license terms. -->
+<form col="4" cursor="to_pick">
+    <field name="shipment" colspan="4"/>
+    <field name="warehouse_storage" colspan="4"/>
+    <field name="product" colspan="4"/>
+    <field name="to_location" colspan="4"/>
+    <field name="to_pick" colspan="4"/>
+    <field name="pending_moves" colspan="4" widget="richtext" toolbar="0" yexpand="1" yfill="1"/>
+</form>

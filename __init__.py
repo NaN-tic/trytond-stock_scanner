@@ -12,10 +12,14 @@ def register():
         stock.ShipmentIn,
         stock.ShipmentOut,
         stock.ShipmentOutReturn,
+        picking.StockPickingShipmentInAsk,
+        picking.StockPickingShipmentInScan,
+        picking.StockPickingShipmentInResult,
         picking.StockPickingShipmentOutAsk,
         picking.StockPickingShipmentOutScan,
         picking.StockPickingShipmentOutResult,
         module='stock_scanner', type_='model')
     Pool.register(
+        picking.StockPickingShipmentIn,
         picking.StockPickingShipmentOut,
         module='stock_scanner', type_='wizard')

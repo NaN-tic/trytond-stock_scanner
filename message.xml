@@ -6,5 +6,8 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.message" id="msg_scan_all">
             <field name="text">Are you sure you want to scan all pending moves and leave them as received? This action cannot be undone.</field>
         </record>
+        <record model="ir.message" id="msg_picking_change_location">
+            <field name="text">Replenish "%(product)s" to "%(location)s"?</field>
+        </record>
     </data>
 </tryton>

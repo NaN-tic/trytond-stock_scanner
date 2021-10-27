@@ -3,6 +3,33 @@
 The COPYRIGHT file at the top level of this repository contains the full copyright notices and license terms. -->
 <tryton>
     <data>
+        <!-- Stock Picking Shipment In-->
+        <record model="ir.ui.view" id="stock_picking_shipment_in_start">
+            <field name="model">stock.picking.shipment.in.ask</field>
+            <field name="type">form</field>
+            <field name="name">stock_picking_shipment_in_start</field>
+        </record>
+        <record model="ir.ui.view" id="stock_picking_shipment_in_scan">
+            <field name="model">stock.picking.shipment.in.scan</field>
+            <field name="type">form</field>
+            <field name="name">stock_picking_shipment_in_scan</field>
+        </record>
+        <record model="ir.ui.view" id="stock_picking_shipment_in_result">
+            <field name="model">stock.picking.shipment.in.result</field>
+            <field name="type">form</field>
+            <field name="name">stock_picking_shipment_in_result</field>
+        </record>
+
+        <record model="ir.action.wizard" id="act_stock_picking_shipment_in">
+            <field name="name">Shipment In Picking</field>
+            <field name="wiz_name">stock.picking.shipment.in</field>
+            <field name="window" eval="False"/>
+        </record>
+        <menuitem name="Shipment In Picking" parent="stock.menu_shipment_in_form"
+            action="act_stock_picking_shipment_in"
+            id="menu_stock_shipment_in_picking"
+            sequence="50"/>
+
         <!-- Stock Picking Shipment Out-->
         <record model="ir.ui.view" id="stock_picking_shipment_out_start">
             <field name="model">stock.picking.shipment.out.ask</field>
