@@ -147,6 +147,13 @@ class StockScanMixin(object):
                 }, depends=['scanner_enabled', 'state'],
             help='List of pending products to be scan.'),
         'get_pending_moves', setter='set_pending_moves')
+    pending_inventory_moves = fields.Function(fields.One2Many('stock.move', None,
+            'Pending Moves', states={
+                'invisible': (~Eval('scanner_enabled', False)
+                    | ~Eval('state', 'draft').in_(['done', 'draft', 'cancel'])),
+                }, depends=['scanner_enabled', 'state'],
+            help='List of pending inventory products to be scan.'),
+        'get_pending_inventory_moves')
     scannable_products = fields.Function(fields.Many2Many('product.product',
             None, None, 'Scannable Products'),
         'get_scannable_products')
@@ -175,6 +182,11 @@ class StockScanMixin(object):
         super(StockScanMixin, cls).__setup__()
         cls._buttons.update({
                 'scan': {
+                    'invisible': ~And(
+                            Eval('pending_moves', False),
+                            Bool(Eval('scanned_product'))),
+                },
+                'scan_inventory': {
                     'invisible': ~And(
                             Eval('pending_moves', False),
                             Bool(Eval('scanned_product'))),
@@ -209,6 +221,9 @@ class StockScanMixin(object):
 
     def get_pending_moves(self, name):
         return [l.id for l in self.get_pick_moves() if l.pending_quantity > 0]
+
+    def get_pending_inventory_moves(self, name):
+        return [l.id for l in self.inventory_moves if l.pending_quantity > 0]
 
     @classmethod
     def set_pending_moves(cls, shipments, name, value):
@@ -275,6 +290,15 @@ class StockScanMixin(object):
                 moves.append(move)
         return moves
 
+    def get_matching_inventory_moves(self):
+        """Get possible scanned move"""
+        moves = []
+        for move in self.pending_inventory_moves:
+            if (move.product == self.scanned_product
+                    and move.pending_quantity > 0):
+                moves.append(move)
+        return moves
+
     @fields.depends('scanned_uom', 'scanned_product')
     def on_change_with_scanned_product_unit_digits(self, name=None):
         if self.scanned_uom:
@@ -294,6 +318,20 @@ class StockScanMixin(object):
                 continue
 
             shipment.process_moves(shipment.get_matching_moves())
+            shipment.clear_scan_values()
+            shipment.save()  # TODO: move to save multiple shipments?
+
+    @classmethod
+    @ModelView.button
+    def scan_inventory(cls, shipments):
+        for shipment in shipments:
+            product = shipment.scanned_product
+            scanned_quantity = shipment.scanned_quantity
+            if (not product or not scanned_quantity
+                    or shipment.scanned_quantity <= 0):
+                continue
+
+            shipment.process_moves(shipment.get_matching_inventory_moves())
             shipment.clear_scan_values()
             shipment.save()  # TODO: move to save multiple shipments?
 

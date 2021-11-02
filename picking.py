@@ -31,7 +31,7 @@ class StockPickingShipmentInScan(ModelView):
     product = fields.Many2One('product.product', 'Product', readonly=True)
     to_location = fields.Many2One('stock.location', 'Location', readonly=True)
     to_pick = fields.Char('To pick')
-    pending_moves = fields.Text("Pending Moves", readonly=True)
+    pending_inventory_moves = fields.Text("Pending Inventory Moves", readonly=True)
 
 
 class StockPickingShipmentInResult(ModelView):
@@ -54,21 +54,37 @@ class StockPickingShipmentIn(Wizard):
         'stock_scanner.stock_picking_shipment_in_scan', [
             Button('Cancel', 'end', 'tryton-cancel'),
             Button('Back', 'ask', 'tryton-back'),
+            Button('Reset', 'reset', 'tryton-launch'),
             Button('Pick', 'pick', 'tryton-launch', True),
-            Button('Replenish', 'replenish', 'tryton-ok'),
+            Button('Done', 'done', 'tryton-ok'),
             ])
     pick = StateTransition()
-    replenish = StateTransition()
+    reset = StateTransition()
+    done = StateTransition()
     result = StateView('stock.picking.shipment.in.result',
         'stock_scanner.stock_picking_shipment_in_result', [
             Button('Start', 'ask', 'tryton-back', True),
-            Button('Done', 'end', 'tryton-ok'),
+            Button('Exit', 'end', 'tryton-ok'),
             ])
+
+    def transition_reset(self):
+        pool = Pool()
+        Shipment = pool.get('stock.shipment.in')
+
+        if self.scan.shipment:
+            shipment = Shipment(self.scan.shipment)
+            shipment.scanned_product = None
+            shipment.scanned_quantity = None
+            shipment.save()
+        self.scan.product = None
+        self.scan.to_location = None
+        return 'scan'
 
     def transition_pick(self):
         pool = Pool()
         Shipment = pool.get('stock.shipment.in')
         Location = pool.get('stock.location')
+        Move = pool.get('stock.move')
         Warning = Pool().get('res.user.warning')
 
         shipment = Shipment(self.scan.shipment)
@@ -83,51 +99,48 @@ class StockPickingShipmentIn(Wizard):
         to_pick = self.scan.to_pick
         quantity = qty(to_pick)
 
-        if shipment.scanned_product:
-            self.scan.product = shipment.scanned_product
-            if self.scan.to_location and quantity and len(to_pick) < 5:
-                # TODO picking en blocs, una quantitat en una ubicacio i unes altres quantitats en unes altres ubicacions
+        if self.scan.product:
+            if self.scan.to_location and len(to_pick) < 5 and quantity:
+                shipment.scanned_product = self.scan.product
                 shipment.scanned_quantity = shipment.scanned_uom.round(quantity)
                 shipment.save()
-                Shipment.scan([shipment])
+                Shipment.scan_inventory([shipment])
                 shipment = Shipment(shipment.id)
+                # reset in case has not pending moves by product
+                if not any(move for move in shipment.pending_inventory_moves if move.product == self.scan.product):
+                    self.scan.product = None
+                    self.scan.to_location = None
             else:
-                # TODO find locations childs of warehouse_storage
-                # TODO how to find location? code, name?
                 loc_to_picks = Location.search([
                     ('rec_name', '=', to_pick),
+                    ('parent', 'child_of', self.scan.shipment.warehouse_storage),
+                    ('type', 'not in', ['warehouse', 'view']),
                     ], limit=1)
                 if loc_to_picks:
                     to_location, = loc_to_picks
                     self.scan.to_location = to_location
 
                     # check to_location pick and to_location move
-                    for move in shipment.pending_moves:
-                        if move.matches_scan(shipment.scanned_product.code):
+                    for move in shipment.pending_inventory_moves:
+                        if move.matches_scan(self.scan.product.code):
                             if move.to_location != to_location:
-                                # TODO com fem el key vagi canviant el ID, sempre ens ho demani (ex. fer picking de unitats en blocs)
-                                key = 'picking_change_location.%d' % move.id
-                                if Warning.check(key):
-                                    raise UserWarning(key, gettext(
-                                        'stock_scanner.msg_picking_change_location',
-                                        product=shipment.scanned_product.rec_name,
-                                        location=to_location.rec_name))
-                                    # TODO write to_location in current move
-                                    break
-
-                # locations = Location.search([
-                #     ('parent', 'child_of', self.scan.warehouse_storage),
-                #     ])
-                # if locations:
-                #     loc_to_picks = Location.search([
-                #         ('rec_name', '=', to_pick),
-                #         ('id', 'in', [self.scan.warehouse_storage.id] + [l.id for l in locations]),
-                #         ], limit=1)
-                #     if loc_to_picks:
-                #         self.scan.location = loc_to_picks[0].id
-
+                                if move.quantity == move.pending_quantity:
+                                    move.to_location = to_location
+                                    move.save()
+                                elif move.quantity > move.pending_quantity:
+                                    pending_quantity = move.pending_quantity
+                                    move.quantity = move.quantity - pending_quantity
+                                    move.save()
+                                    Move.copy([move], default={'to_location': to_location, 'quantity': pending_quantity})
+                                # key = 'picking_change_location.%d' % move.id
+                                # if Warning.check(key):
+                                #     raise UserWarning(key, gettext(
+                                #         'stock_scanner.msg_picking_change_location',
+                                #         product=shipment.scanned_product.rec_name,
+                                #         location=to_location.rec_name))
+                                #     break
         else:
-            for move in shipment.pending_moves:
+            for move in shipment.pending_inventory_moves:
                 if move.matches_scan(to_pick):
                     self.scan.product = move.product
                     self.scan.to_location = move.to_location
@@ -139,13 +152,13 @@ class StockPickingShipmentIn(Wizard):
                     shipment.scanned_product = move.product
                     shipment.save()
                     break
-            else:
-                self.scan.product = None
-                self.scan.to_location = None
+                else:
+                    self.scan.product = None
+                    self.scan.to_location = None
 
         return 'scan'
 
-    def transition_replenish(self):
+    def transition_done(self):
         pool = Pool()
         Shipment = pool.get('stock.shipment.in')
 
@@ -161,7 +174,7 @@ class StockPickingShipmentIn(Wizard):
         self.scan.product = None
         self.scan.to_location = None
         self.scan.to_pick = None
-        self.scan.pending_moves = None
+        self.scan.pending_inventory_moves = None
         return {}
 
     def default_scan(self, fields):
@@ -186,6 +199,12 @@ class StockPickingShipmentIn(Wizard):
                 return {}
             shipment, = shipments
 
+        # reset scanned_product and scanned_quantity
+        if (not self.scan.product and (shipment.scanned_product or shipment.scanned_quantity)):
+            shipment.scanned_product = None
+            shipment.scanned_quantity = None
+            shipment.save()
+
         defaults = {}
         defaults['shipment'] = shipment.id
         defaults['warehouse_storage'] = shipment.warehouse.storage_location.id
@@ -194,25 +213,20 @@ class StockPickingShipmentIn(Wizard):
         if hasattr(self.scan, 'to_location'):
             defaults['to_location'] = self.scan.to_location and self.scan.to_location.id
 
-        pending_moves = []
+        pending_inventory_moves = []
         locations_move = {}
-        for move in shipment.pending_moves:
+        for move in shipment.pending_inventory_moves:
             locations_move.setdefault(move.to_location, [])
             locations_move[move.to_location].append(move)
 
         for location in sorted(locations_move, key=lambda x: x.name):
-            if location not in storage_locations:
-                pending_moves.append(
-                    u'<div align="left">'
-                    '<font size="4"><u><b>{}</b></u></font>'
-                    '</div>'.format(location.name))
             for move in locations_move[location]:
-                pending_moves.append(
+                pending_inventory_moves.append(
                     u'<div align="left">'
                     '<font size="4">{} <b>{}</b> | {}</font>'
                     '</div>'.format(move.pending_quantity,
                         move.product.rec_name, move.to_location.rec_name))
-        defaults['pending_moves'] = '\n'.join(pending_moves)
+        defaults['pending_inventory_moves'] = '\n'.join(pending_inventory_moves)
         return defaults
 
     def default_result(self, fields):
@@ -273,7 +287,7 @@ class StockPickingShipmentOut(Wizard):
     result = StateView('stock.picking.shipment.out.result',
         'stock_scanner.stock_picking_shipment_out_result', [
             Button('Start', 'ask', 'tryton-back', True),
-            Button('Done', 'end', 'tryton-ok'),
+            Button('Exit', 'end', 'tryton-ok'),
             ])
 
     def transition_pick(self):
@@ -292,7 +306,7 @@ class StockPickingShipmentOut(Wizard):
         to_pick = self.scan.to_pick
         quantity = qty(to_pick)
 
-        if shipment.scanned_product and quantity and len(to_pick) < 5:
+        if self.scan.product and quantity and len(to_pick) < 5:
             shipment.scanned_quantity = shipment.scanned_uom.round(quantity)
             shipment.save()
             Shipment.scan([shipment])
@@ -309,8 +323,8 @@ class StockPickingShipmentOut(Wizard):
                     shipment.scanned_product = move.product
                     shipment.save()
                     break
-            else:
-                self.scan.product = None
+                else:
+                    self.scan.product = None
         return 'scan'
 
     def transition_packed(self):
@@ -352,6 +366,12 @@ class StockPickingShipmentOut(Wizard):
             if not shipments:
                 return {}
             shipment, = shipments
+
+        # reset scanned_product and scanned_quantity
+        if (not self.scan.product and (shipment.scanned_product or shipment.scanned_quantity)):
+            shipment.scanned_product = None
+            shipment.scanned_quantity = None
+            shipment.save()
 
         defaults = {}
         defaults['shipment'] = shipment.id
