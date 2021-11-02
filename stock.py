@@ -208,7 +208,7 @@ class StockScanMixin(object):
         return {}.fromkeys([s.id for s in shipments], scanner_enabled)
 
     def get_pending_moves(self, name):
-        return [l.id for l in self.get_pick_moves() if l.pending_quantity > 0]
+        return [x.id for x in self.get_pick_moves() if x.pending_quantity > 0]
 
     @classmethod
     def set_pending_moves(cls, shipments, name, value):
@@ -227,8 +227,10 @@ class StockScanMixin(object):
                         if shipment.__name__ in cls._scanner_allow_delete]):
                     move_ids = v[1]
                     if move_ids:
-                        # not delete. Set shipment to none to allow pick in other shipment
-                        to_write.extend((Move.browse(move_ids), {'shipment': None}))
+                        # not delete. Set shipment to none to allow pick in
+                        # other shipment
+                        to_write.extend((Move.browse(move_ids),
+                                {'shipment': None}))
 
         if to_write:
             Move.write(*to_write)
@@ -260,7 +262,6 @@ class StockScanMixin(object):
             if config.scanner_fill_quantity:
                 self.scanned_quantity = scanned_moves[0].pending_quantity
             return
-
 
         self.scanned_uom = self.scanned_product.default_uom
         self.scanned_product_unit_digits = (
