@@ -10,6 +10,10 @@ msgctxt "field:stock.configuration,scanner_on_shipment_in:"
 msgid "Scanner on Supplier Shipments?"
 msgstr "Escanejat a albarans de proveïdor?"
 
+msgctxt "field:stock.configuration,scanner_on_shipment_in_return:"
+msgid "Scanner on Supplier Return Shipments?"
+msgstr "Escanejat a albarans de devolució de proveïdor?"
+
 msgctxt "field:stock.configuration,scanner_on_shipment_out:"
 msgid "Scanner on Customer Shipments?"
 msgstr "Escanejat albarans de client?"
@@ -25,6 +29,38 @@ msgstr "Quantitat pendent"
 msgctxt "field:stock.move,scanned_quantity:"
 msgid "Scanned Quantity"
 msgstr "Quantitat escanejada"
+
+msgctxt "field:stock.picking.shipment.out.ask,shipment:"
+msgid "Shipment"
+msgstr "Albarà"
+
+msgctxt "field:stock.picking.shipment.out.ask,to_pick:"
+msgid "To Pick"
+msgstr "Per recollir"
+
+msgctxt "field:stock.picking.shipment.out.result,note:"
+msgid "Note"
+msgstr "Nota"
+
+msgctxt "field:stock.picking.shipment.out.result,shipment:"
+msgid "Shipment"
+msgstr "Albarà"
+
+msgctxt "field:stock.picking.shipment.out.scan,pending_moves:"
+msgid "APP Pending Moves"
+msgstr "APP moviments pendents"
+
+msgctxt "field:stock.picking.shipment.out.scan,product:"
+msgid "Product"
+msgstr "Producte"
+
+msgctxt "field:stock.picking.shipment.out.scan,shipment:"
+msgid "Shipment"
+msgstr "Albarà"
+
+msgctxt "field:stock.picking.shipment.out.scan,to_pick:"
+msgid "To pick"
+msgstr "Per recollir"
 
 msgctxt "field:stock.shipment.in,pending_moves:"
 msgid "Pending Moves"
@@ -51,34 +87,6 @@ msgid "Scanned UoM"
 msgstr "UdM escanejada"
 
 msgctxt "field:stock.shipment.in,scanner_enabled:"
-msgid "Scanner Enabled"
-msgstr "Escanejat habilitat"
-
-msgctxt "field:stock.shipment.in.return,pending_moves:"
-msgid "Pending Moves"
-msgstr "Moviments pendents"
-
-msgctxt "field:stock.shipment.in.return,scannable_products:"
-msgid "Scannable Products"
-msgstr "Escanejar productes"
-
-msgctxt "field:stock.shipment.in.return,scanned_product:"
-msgid "Scanned product"
-msgstr "Producte escanejat"
-
-msgctxt "field:stock.shipment.in.return,scanned_product_unit_digits:"
-msgid "Scanned Product Unit Digits"
-msgstr "Dígits unitat producte escanejat"
-
-msgctxt "field:stock.shipment.in.return,scanned_quantity:"
-msgid "Quantity"
-msgstr "Quantitat"
-
-msgctxt "field:stock.shipment.in.return,scanned_uom:"
-msgid "Scanned UoM"
-msgstr "UdM escanejada"
-
-msgctxt "field:stock.shipment.in.return,scanner_enabled:"
 msgid "Scanner Enabled"
 msgstr "Escanejat habilitat"
 
@@ -159,18 +167,6 @@ msgctxt "help:stock.shipment.in,scanned_quantity:"
 msgid "Quantity of the scanned product."
 msgstr "Quantitat del producte escanejat"
 
-msgctxt "help:stock.shipment.in.return,pending_moves:"
-msgid "List of pending products to be scan."
-msgstr "Llista de productes pendents d'escanejar"
-
-msgctxt "help:stock.shipment.in.return,scanned_product:"
-msgid "Scan the code of the next product."
-msgstr "Escanejeu el codi del proxim producte"
-
-msgctxt "help:stock.shipment.in.return,scanned_quantity:"
-msgid "Quantity of the scanned product."
-msgstr "Quantitat del producte escanejat"
-
 msgctxt "help:stock.shipment.out,pending_moves:"
 msgid "List of pending products to be scan."
 msgstr "Llista de productes pendents d'escanejar"
@@ -194,6 +190,18 @@ msgstr "Escanejeu el codi del proxim producte"
 msgctxt "help:stock.shipment.out.return,scanned_quantity:"
 msgid "Quantity of the scanned product."
 msgstr "Quantitat del producte escanejat"
+
+msgctxt "model:ir.action,name:act_stock_picking_shipment_out"
+msgid "Shipment Out Picking"
+msgstr "Recollir albarà de client"
+
+msgctxt "model:ir.message,text:msg_scan_all"
+msgid ""
+"Are you sure you want to scan all pending moves and leave them as received? "
+"This action cannot be undone."
+msgstr ""
+"Esteu segurs de voler escanejar tots els moviments i passar a rebut? Aquesta"
+" acció no es pot desfer."
 
 msgctxt "model:ir.model.button,string:shipment_in_reset_button"
 msgid "Reset Scanned Quantities"
@@ -231,13 +239,25 @@ msgctxt "model:ir.model.button,string:shipment_out_scan_button"
 msgid "Scan"
 msgstr "Escaneja"
 
-msgctxt "model:ir.model.button,string:shipment_return_in_scan_button"
-msgid "Scan"
-msgstr "Escaneja"
+msgctxt "model:ir.ui.menu,name:menu_stock_shipment_out_picking"
+msgid "Shipment Out Picking"
+msgstr "Recollir albarans de client"
 
 msgctxt "model:res.group,name:group_stock_scan_all"
 msgid "Stock Scan All"
 msgstr "Logística - Escanejar tot"
+
+msgctxt "model:stock.picking.shipment.out.ask,name:"
+msgid "Stock Picking Shipment Out Ask"
+msgstr "Inici recollir albarà de client"
+
+msgctxt "model:stock.picking.shipment.out.result,name:"
+msgid "Stock Picking Shipment Out Result"
+msgstr "Resultat recollir albarà de client"
+
+msgctxt "model:stock.picking.shipment.out.scan,name:"
+msgid "Stock Picking Shipment Out Scan"
+msgstr "Escanner recollida albarà de client"
 
 msgctxt "view:stock.configuration:"
 msgid "Scanning Configuration"
@@ -251,17 +271,13 @@ msgctxt "view:stock.move:"
 msgid "Pending Moves"
 msgstr "Moviments pendents"
 
-msgctxt "view:stock.shipment.in:"
-msgid "Reset Scanned Quantities"
-msgstr "Reestableix quantitats escanejades"
+msgctxt "view:stock.picking.shipment.out.result:"
+msgid "Done picking shipment"
+msgstr "Finalitzar recollida d'albarà"
 
 msgctxt "view:stock.shipment.in:"
 msgid "Scan"
 msgstr "Escaneja"
-
-msgctxt "view:stock.shipment.in:"
-msgid "Scan All"
-msgstr "Escaneja tot"
 
 msgctxt "view:stock.shipment.out.return:"
 msgid "Reset Scanned Quantities"
@@ -286,3 +302,35 @@ msgstr "Escaneja"
 msgctxt "view:stock.shipment.out:"
 msgid "Scan All"
 msgstr "Escaneja tot"
+
+msgctxt "wizard_button:stock.picking.shipment.out,ask,end:"
+msgid "Cancel"
+msgstr "Cancel·la"
+
+msgctxt "wizard_button:stock.picking.shipment.out,ask,scan:"
+msgid "Scan"
+msgstr "Escaneja"
+
+msgctxt "wizard_button:stock.picking.shipment.out,result,ask:"
+msgid "Start"
+msgstr "Inici"
+
+msgctxt "wizard_button:stock.picking.shipment.out,result,end:"
+msgid "Done"
+msgstr "Finalitza"
+
+msgctxt "wizard_button:stock.picking.shipment.out,scan,ask:"
+msgid "Back"
+msgstr "Enrerra"
+
+msgctxt "wizard_button:stock.picking.shipment.out,scan,end:"
+msgid "Cancel"
+msgstr "Cancel·la"
+
+msgctxt "wizard_button:stock.picking.shipment.out,scan,packed:"
+msgid "Packed"
+msgstr "Empaquetat"
+
+msgctxt "wizard_button:stock.picking.shipment.out,scan,pick:"
+msgid "Pick"
+msgstr "Recollir"
