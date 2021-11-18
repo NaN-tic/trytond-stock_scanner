@@ -102,7 +102,7 @@ class Move(metaclass=PoolMeta):
             if 'quantity' in values:
                 for move in moves:
                     if (move.state == 'assigned'
-                            and values['quantity'] > move.quantity):
+                            and float(values['quantity']) > move.quantity):
                         raise AccessError(
                             gettext('stock.msg_move_modify_assigned',
                                 move=move.rec_name))
