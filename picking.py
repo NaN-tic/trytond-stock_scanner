@@ -4,7 +4,7 @@ from trytond.model import ModelView, fields
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.pool import Pool
 from trytond.i18n import gettext
-from trytond.exceptions import UserWarning
+from trytond.exceptions import UserError, UserWarning
 
 
 class StockPickingShipmentInAsk(ModelView):
@@ -116,29 +116,32 @@ class StockPickingShipmentIn(Wizard):
                     ('parent', 'child_of', self.scan.shipment.warehouse_storage),
                     ('type', 'not in', ['warehouse', 'view']),
                     ], limit=1)
-                if loc_to_picks:
-                    to_location, = loc_to_picks
-                    self.scan.to_location = to_location
+                if not loc_to_picks:
+                    raise UserError(gettext('stock_scanner.msg_not_found_location',
+                        name=to_pick))
 
-                    # check to_location pick and to_location move
-                    for move in shipment.pending_inventory_moves:
-                        if move.matches_scan(self.scan.product.code):
-                            if move.to_location != to_location:
-                                if move.quantity == move.pending_quantity:
-                                    move.to_location = to_location
-                                    move.save()
-                                elif move.quantity > move.pending_quantity:
-                                    pending_quantity = move.pending_quantity
-                                    move.quantity = move.quantity - pending_quantity
-                                    move.save()
-                                    Move.copy([move], default={'to_location': to_location, 'quantity': pending_quantity})
-                                # key = 'picking_change_location.%d' % move.id
-                                # if Warning.check(key):
-                                #     raise UserWarning(key, gettext(
-                                #         'stock_scanner.msg_picking_change_location',
-                                #         product=shipment.scanned_product.rec_name,
-                                #         location=to_location.rec_name))
-                                #     break
+                to_location, = loc_to_picks
+                self.scan.to_location = to_location
+
+                # check to_location pick and to_location move
+                for move in shipment.pending_inventory_moves:
+                    if move.matches_scan(self.scan.product.code):
+                        if move.to_location != to_location:
+                            if move.quantity == move.pending_quantity:
+                                move.to_location = to_location
+                                move.save()
+                            elif move.quantity > move.pending_quantity:
+                                pending_quantity = move.pending_quantity
+                                move.quantity = move.quantity - pending_quantity
+                                move.save()
+                                Move.copy([move], default={'to_location': to_location, 'quantity': pending_quantity})
+                            # key = 'picking_change_location.%d' % move.id
+                            # if Warning.check(key):
+                            #     raise UserWarning(key, gettext(
+                            #         'stock_scanner.msg_picking_change_location',
+                            #         product=shipment.scanned_product.rec_name,
+                            #         location=to_location.rec_name))
+                            #     break
         else:
             for move in shipment.pending_inventory_moves:
                 if move.matches_scan(to_pick):
