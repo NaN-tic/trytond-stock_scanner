@@ -77,8 +77,9 @@ class Move(metaclass=PoolMeta):
     def get_pending_quantity(cls, moves, name):
         quantity = {}
         for move in moves:
-            quantity[move.id] = move.uom.round(
+            quantity[move.id] = (move.uom.round(
                 move.quantity - (move.scanned_quantity or 0.0))
+                if move.scanned_quantity != 0.0 else 0.0)
         return quantity
 
     @classmethod
@@ -290,13 +291,10 @@ class StockScanMixin(object):
         for shipment in shipments:
             product = shipment.scanned_product
             scanned_quantity = shipment.scanned_quantity
-            if (not product or not scanned_quantity
-                    or shipment.scanned_quantity <= 0):
-                continue
-
-            shipment.process_moves(shipment.get_matching_moves())
-            shipment.clear_scan_values()
-            shipment.save()  # TODO: move to save multiple shipments?
+            if product and (scanned_quantity or scanned_quantity >= 0):
+                shipment.process_moves(shipment.get_matching_moves())
+                shipment.clear_scan_values()
+                shipment.save()  # TODO: move to save multiple shipments?
 
     @classmethod
     @ModelView.button
@@ -337,8 +335,11 @@ class StockScanMixin(object):
         pool = Pool()
         Uom = pool.get('product.uom')
 
-        if (not self.scanned_quantity or not self.scanned_uom
-                or self.scanned_quantity < self.scanned_uom.rounding):
+        scanned_quantity = self.scanned_quantity
+        if (scanned_quantity != 0.0 and (
+                not scanned_quantity
+                or not self.scanned_uom
+                or scanned_quantity < self.scanned_uom.rounding)):
             return
 
         if not moves:
@@ -347,14 +348,19 @@ class StockScanMixin(object):
             moves = [move]
 
         for move in moves:
-            # find move with the same quantity
-            scanned_qty_in_move_uom = Uom.compute_qty(self.scanned_uom,
-                self.scanned_quantity, move.uom, round=False)
-            if (abs(move.pending_quantity - scanned_qty_in_move_uom)
-                    < move.uom.rounding):
-                move.scanned_quantity = move.quantity
+            if scanned_quantity == 0.0:
+                move.scanned_quantity = scanned_quantity
                 move.save()
                 return move
+            else:
+                # find move with the same quantity
+                scanned_qty_in_move_uom = Uom.compute_qty(self.scanned_uom,
+                    self.scanned_quantity, move.uom, round=False)
+                if (abs(move.pending_quantity - scanned_qty_in_move_uom)
+                        < move.uom.rounding):
+                    move.scanned_quantity = move.quantity
+                    move.save()
+                    return move
 
         # Find move with the nearest pending quantity
         moves.sort(key=lambda m: m.internal_quantity)
