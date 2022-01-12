@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!-- This file is part uudgore module for Tryton.
+The COPYRIGHT file at the top level of this repository contains the full copyright notices and license terms. -->
+<tryton>
+    <data>
+        <!-- Stock Scanner Inventory-->
+        <record model="ir.ui.view" id="stock_scanner_inventory_start">
+            <field name="model">stock.scanner.inventory.ask</field>
+            <field name="type">form</field>
+            <field name="name">stock_scanner_inventory_start</field>
+        </record>
+        <record model="ir.ui.view" id="stock_scanner_inventory_scan">
+            <field name="model">stock.scanner.inventory.scan</field>
+            <field name="type">form</field>
+            <field name="name">stock_scanner_inventory_scan</field>
+        </record>
+        <record model="ir.ui.view" id="stock_scanner_inventory_result">
+            <field name="model">stock.scanner.inventory.result</field>
+            <field name="type">form</field>
+            <field name="name">stock_scanner_inventory_result</field>
+        </record>
+
+        <!-- stock.scanner.inventory.line -->
+        <record model="ir.ui.view" id="stock_scanner_inventory_line_view_form">
+            <field name="model">stock.scanner.inventory.line</field>
+            <field name="type">form</field>
+            <field name="name">stock_scanner_inventory_line_form</field>
+        </record>
+        <record model="ir.ui.view" id="stock_scanner_inventory_line_view_tree">
+            <field name="model">stock.scanner.inventory.line</field>
+            <field name="type">tree</field>
+            <field name="name">stock_scanner_inventory_line_tree</field>
+        </record>
+
+        <record model="ir.action.wizard" id="act_stock_scanner_inventory">
+            <field name="name">Stock Scanner Inventory</field>
+            <field name="wiz_name">stock.scanner.inventory</field>
+            <field name="window" eval="False"/>
+        </record>
+        <menuitem name="Scanner Inventory" parent="stock.menu_inventory_form"
+            action="act_stock_scanner_inventory"
+            id="menu_stock_scanner_inventory"
+            sequence="50"/>
+    </data>
+</tryton>
