@@ -3,7 +3,6 @@
 from trytond.model import ModelView, fields
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.pool import Pool
-from trytond.pyson import Eval
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 
@@ -11,13 +10,13 @@ from trytond.i18n import gettext
 class StockScannerInventoryAsk(ModelView):
     'Stock Scanner Inventory Ask'
     __name__ = 'stock.scanner.inventory.ask'
-    from_location = fields.Many2One('stock.location', "From Location",
+    location = fields.Many2One('stock.location', "Location",
         domain=[
-            ('type', 'in', ['lost_found', 'storage']),
+            ('type', '=', 'storage'),
         ], required=True)
-    to_location = fields.Many2One('stock.location', "To Location",
+    lost_found = fields.Many2One('stock.location', "Lost and Found",
         domain=[
-            ('type', 'in', ['lost_found', 'storage']),
+            ('type', '=', 'lost_found'),
         ], required=True)
     to_inventory = fields.Selection([
         ('complete', 'Complete'),
@@ -32,56 +31,18 @@ class StockScannerInventoryAsk(ModelView):
 class StockScannerInventoryScan(ModelView):
     'Stock Scanner Inventory Scan'
     __name__ = 'stock.scanner.inventory.scan'
-    from_location = fields.Many2One('stock.location', "From Location",
+    inventory = fields.Many2One('stock.inventory', "Inventory", readonly=True)
+    location = fields.Many2One('stock.location', "Location",
         domain=[
-            ('type', 'in', ['lost_found', 'storage']),
+            ('type', '=','storage'),
         ], readonly=True)
-    to_location = fields.Many2One('stock.location', "To Location",
+    lost_found = fields.Many2One('stock.location', "Lost and Found",
         domain=[
-            ('type', 'in', ['lost_found', 'storage']),
+            ('type', '=', 'lost_found'),
         ], readonly=True)
     product = fields.Many2One('product.product', "Product", readonly=True)
     to_pick = fields.Char("To pick")
-    lines = fields.One2Many('stock.scanner.inventory.line', None, "Lines")
-
-
-class StockScannerInventoryLine(ModelView):
-    'Stock Scanner Inventory Line'
-    __name__ = 'stock.scanner.inventory.line'
-    product = fields.Many2One('product.product', "Product")
-    product_uom_category = fields.Function(
-        fields.Many2One('product.uom.category', "Product Uom Category"),
-        'on_change_with_product_uom_category')
-    uom = fields.Many2One("product.uom", "Uom", required=True,
-        domain=[
-            ('category', '=', Eval('product_uom_category')),
-            ],
-        depends=['state', 'unit_price', 'product_uom_category'],
-        help="The unit in which the quantity is specified.")
-    unit_digits = fields.Function(fields.Integer("Unit Digits"),
-        'on_change_with_unit_digits')
-    quantity = fields.Float("Quantity", required=True,
-        digits=(16, Eval('unit_digits', 2)),
-        depends=['unit_digits'])
-
-    @fields.depends('product', 'uom')
-    def on_change_product(self):
-        if self.product:
-            if (not self.uom
-                    or self.uom.category != self.product.default_uom.category):
-                self.uom = self.product.default_uom
-                self.unit_digits = self.product.default_uom.digits
-
-    @fields.depends('product')
-    def on_change_with_product_uom_category(self, name=None):
-        if self.product:
-            return self.product.default_uom_category.id
-
-    @fields.depends('uom')
-    def on_change_with_unit_digits(self, name=None):
-        if self.uom:
-            return self.uom.digits
-        return 2
+    lines = fields.Text('Lines', readonly=True)
 
 
 class StockScannerInventoryResult(ModelView):
@@ -107,7 +68,7 @@ class StockScannerInventory(Wizard):
             Button('Done', 'done', 'tryton-ok'),
             ])
     pick = StateTransition()
-    packed = StateTransition()
+    done = StateTransition()
     result = StateView('stock.scanner.inventory.result',
         'stock_scanner.stock_scanner_inventory_result', [
             Button('Start', 'ask', 'tryton-back', True),
@@ -116,13 +77,9 @@ class StockScannerInventory(Wizard):
 
     def transition_pick(self):
         pool = Pool()
-        StockScannerInventoryLine = pool.get('stock.scanner.inventory.line')
+        InventoryLine = pool.get('stock.inventory.line')
         Product = pool.get('product.product')
-
-        # pool = Pool()
-        # Shipment = pool.get('stock.shipment.out')
-        #
-        # shipment = Shipment(self.scan.shipment)
+        Configuration = pool.get('stock.configuration')
 
         def qty(value):
             try:
@@ -130,40 +87,30 @@ class StockScannerInventory(Wizard):
             except ValueError:
                 return False
 
-        # shipment = Shipment(self.scan.shipment)
+        config = Configuration(1)
         to_pick = self.scan.to_pick
         quantity = qty(to_pick)
 
         if self.scan.product and len(to_pick) < 5 and quantity:
-            for line in self.scan.lines:
+            for line in self.scan.inventory.lines:
                 if line.product == self.scan.product:
                     line.quantity = quantity
-            # shipment.scanned_quantity = shipment.scanned_uom.round(quantity)
-            # shipment.save()
-            # Shipment.scan([shipment])StockScannerInventory
-            # shipment = Shipment(shipment.id)
+                    line.save()
         else:
             products = Product.search([
                 ('rec_name', '=', to_pick),
                 ], limit=1)
             if products:
                 product, = products
-                products = set([line.product for line in self.scan.lines])
+                products = set([line.product for line in self.scan.inventory.lines])
 
                 if product not in products:
-                    line = StockScannerInventoryLine()
+                    line = InventoryLine()
+                    line.inventory = self.scan.inventory
                     line.product = product
+                    line.quantity = 1 if config.scanner_inventory_quantity else 0
                     line.on_change_product()
-
-                    add_line = {
-                        'product': product.id,
-                        'uom': line.uom.id,
-                        'unit_digits': line.unit_digits,
-                        'product_uom_category': line.on_change_with_product_uom_category(),
-                        'quantity': 0,
-                        }
-                    self.scan.lines += (add_line,)
-
+                    line.save()
                 self.scan.product = product
             else:
                 self.scan.product = None
@@ -172,49 +119,65 @@ class StockScannerInventory(Wizard):
 
     def transition_done(self):
         pool = Pool()
-        # Shipment = pool.get('stock.shipment.out')
-        #
-        # shipment = Shipment(self.scan.shipment)
-        # Shipment.assign([shipment])
-        # Shipment.pack([shipment])
+        Inventory = pool.get('stock.inventory')
+
+        Inventory.complete_lines([self.scan.inventory], fill=False)
+        Inventory.confirm([self.scan.inventory])
 
         return 'result'
 
     def default_ask(self, fields):
-        # reset values in case start first step (select a shipment)
+        # reset values in case start first step
+        self.scan.inventory = None
+        self.scan.location = None
+        self.scan.lost_found = None
         self.scan.product = None
         self.scan.to_pick = None
-        # self.scan.lines = None
+        self.scan.lines = None
         return {}
 
     def default_scan(self, fields):
-        from_location = self.ask.from_location
-        to_location = self.ask.to_location
+        pool = Pool()
+        Inventory = pool.get('stock.inventory')
+        Date = pool.get('ir.date')
+
+        location = self.ask.location
+        lost_found = self.ask.lost_found
 
         # control are lost_found and storage location type
-        if len(set((from_location.type, to_location.type))) != 2:
+        if len(set((location.type, lost_found.type))) != 2:
             # self.ask.from_location = None
             # self.ask.to_location = None
             raise UserError(
                 gettext('stock_scanner.msg_scan_inventory_location'))
 
         defaults = {}
-        defaults['from_location'] = from_location.id
-        defaults['to_location'] = to_location.id
+        defaults['location'] = location.id
+        defaults['lost_found'] = lost_found.id
+
+        if hasattr(self.scan, 'inventory') and self.scan.inventory:
+            inventory = self.scan.inventory
+        else:
+            inventory = Inventory()
+            inventory.location = location
+            inventory.lost_found = lost_found
+            inventory.date = Date.today()
+            inventory.save()
+            if self.ask.to_inventory == 'complete':
+                Inventory.complete_lines([inventory])
+
+        defaults['inventory'] = inventory.id
 
         if hasattr(self.scan, 'product'):
             defaults['product'] = self.scan.product and self.scan.product.id
         if hasattr(self.scan, 'lines'):
-            defaults['lines'] = [{
-                'product': line.product.id,
-                'uom': line.uom.id,
-                'unit_digits': line.unit_digits,
-                'quantity': line.quantity,
-                'product_uom_category': line.product_uom_category.id,
-                } for line in self.scan.lines]
+            defaults['lines'] = [u'<div align="left">'
+                '<font size="4">{} <b>{}</b></font>'
+                '</div>'.format(line.quantity or 0, line.product.rec_name)
+                for line in inventory.lines]
         return defaults
 
     def default_result(self, fields):
         defaults = {}
-        # defaults['inventory'] = self.scan.shipment and self.scan.shipment.id
+        defaults['inventory'] = self.scan.inventory and self.scan.inventory.id
         return defaults

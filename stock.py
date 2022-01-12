@@ -36,6 +36,8 @@ class Configuration(metaclass=PoolMeta):
             'invisible': ~Eval('scanner_fill_quantity'),
         }, depends=['scanner_fill_quantity'],
         help="Quantity scanned are pending quantities")
+    scanner_inventory_quantity = fields.Boolean("Scanner Inventory Quantity",
+        help="Default quantity is 1 or 0")
 
     @classmethod
     def scanner_on_shipment_type(cls, shipment_type):

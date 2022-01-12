@@ -4,8 +4,8 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
 <form col="2">
     <label name="to_inventory"/>
     <field name="to_inventory"/>
-    <label name="from_location"/>
-    <field name="from_location"/>
-    <label name="to_location"/>
-    <field name="to_location"/>
+    <label name="location"/>
+    <field name="location"/>
+    <label name="lost_found"/>
+    <field name="lost_found"/>
 </form>

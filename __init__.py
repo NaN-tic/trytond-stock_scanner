@@ -10,7 +10,6 @@ def register():
         inventory.StockScannerInventoryAsk,
         inventory.StockScannerInventoryScan,
         inventory.StockScannerInventoryResult,
-        inventory.StockScannerInventoryLine,
         stock.Configuration,
         stock.Move,
         stock.ShipmentIn,
