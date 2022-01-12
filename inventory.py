@@ -5,6 +5,7 @@ from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.pool import Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
+from trytond.pyson import Eval
 
 
 class StockScannerInventoryAsk(ModelView):
@@ -22,10 +23,21 @@ class StockScannerInventoryAsk(ModelView):
         ('complete', 'Complete'),
         ('products', 'Products'),
         ], 'To Pick', required=True)
+    empty_quantity = fields.Selection([
+        ('keep', "Keep"),
+        ('empty', "Empty"),
+        ], "Empty Quantity", states={
+            'invisible': Eval('to_inventory') != 'complete',
+            'required': Eval('to_inventory') == 'complete'
+        }, depends=['to_inventory'])
 
     @staticmethod
     def default_to_inventory():
         return 'products'
+
+    @staticmethod
+    def default_empty_quantity():
+        return 'empty'
 
 
 class StockScannerInventoryScan(ModelView):
@@ -158,12 +170,16 @@ class StockScannerInventory(Wizard):
         if hasattr(self.scan, 'inventory') and self.scan.inventory:
             inventory = self.scan.inventory
         else:
+            is_complete = True if self.ask.to_inventory == 'complete' else False
+
             inventory = Inventory()
             inventory.location = location
             inventory.lost_found = lost_found
             inventory.date = Date.today()
+            if is_complete:
+                inventory.empty_quantity = self.ask.empty_quantity
             inventory.save()
-            if self.ask.to_inventory == 'complete':
+            if is_complete:
                 Inventory.complete_lines([inventory])
 
         defaults['inventory'] = inventory.id
