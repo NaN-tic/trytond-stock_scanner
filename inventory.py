@@ -5,31 +5,45 @@ from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.pool import Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
-from trytond.pyson import Eval
+from trytond.pyson import Bool, Eval
 
 
 class StockScannerInventoryAsk(ModelView):
     'Stock Scanner Inventory Ask'
     __name__ = 'stock.scanner.inventory.ask'
+    inventory = fields.Many2One('stock.inventory', "Inventory", domain=[
+        ('state', '=', 'draft'),
+        ])
     location = fields.Many2One('stock.location', "Location",
         domain=[
             ('type', '=', 'storage'),
-        ], required=True)
+        ], states={
+            'invisible': Bool(Eval('inventory')),
+            'required': ~Bool(Eval('inventory')),
+        }, depends=['inventory'])
     lost_found = fields.Many2One('stock.location', "Lost and Found",
         domain=[
             ('type', '=', 'lost_found'),
-        ], required=True)
+        ], states={
+            'invisible': Bool(Eval('inventory')),
+            'required': ~Bool(Eval('inventory')),
+        }, depends=['inventory'])
     to_inventory = fields.Selection([
         ('complete', 'Complete'),
         ('products', 'Products'),
-        ], 'To Pick', required=True)
+        ], "To Pick",
+        states={
+            'invisible': Bool(Eval('inventory')),
+            'required': ~Bool(Eval('inventory')),
+        }, depends=['inventory'])
     empty_quantity = fields.Selection([
         ('keep', "Keep"),
         ('empty', "Empty"),
         ], "Empty Quantity", states={
-            'invisible': Eval('to_inventory') != 'complete',
+            'invisible': (
+                (Eval('to_inventory') != 'complete') | Bool(Eval('inventory'))),
             'required': Eval('to_inventory') == 'complete'
-        }, depends=['to_inventory'])
+        }, depends=['to_inventory', 'inventory'])
 
     @staticmethod
     def default_to_inventory():
@@ -54,7 +68,7 @@ class StockScannerInventoryScan(ModelView):
         ], readonly=True)
     product = fields.Many2One('product.product', "Product", readonly=True)
     to_pick = fields.Char("To pick")
-    lines = fields.Text('Lines', readonly=True)
+    lines = fields.Text("Lines", readonly=True)
 
 
 class StockScannerInventoryResult(ModelView):
@@ -151,10 +165,19 @@ class StockScannerInventory(Wizard):
     def default_scan(self, fields):
         pool = Pool()
         Inventory = pool.get('stock.inventory')
+        InventoryLine = pool.get('stock.inventory.line')
         Date = pool.get('ir.date')
+        Configuration = pool.get('stock.configuration')
 
-        location = self.ask.location
-        lost_found = self.ask.lost_found
+        config = Configuration(1)
+
+        inventory = self.ask.inventory
+        if inventory:
+            location = inventory.location
+            lost_found = inventory.lost_found
+        else:
+            location = self.ask.location
+            lost_found = self.ask.lost_found
 
         # control are lost_found and storage location type
         if len(set((location.type, lost_found.type))) != 2:
@@ -169,6 +192,8 @@ class StockScannerInventory(Wizard):
 
         if hasattr(self.scan, 'inventory') and self.scan.inventory:
             inventory = self.scan.inventory
+        elif self.ask.inventory:
+             inventory = self.ask.inventory
         else:
             is_complete = True if self.ask.to_inventory == 'complete' else False
 
@@ -181,16 +206,21 @@ class StockScannerInventory(Wizard):
             inventory.save()
             if is_complete:
                 Inventory.complete_lines([inventory])
+                lines = inventory.lines
+                if lines:
+                    quantity = 1 if config.scanner_inventory_quantity else 0
+                    InventoryLine.write(list(lines), {'quantity': quantity})
 
         defaults['inventory'] = inventory.id
 
         if hasattr(self.scan, 'product'):
             defaults['product'] = self.scan.product and self.scan.product.id
+
         if hasattr(self.scan, 'lines'):
             defaults['lines'] = [u'<div align="left">'
                 '<font size="4">{} <b>{}</b></font>'
                 '</div>'.format(line.quantity or 0, line.product.rec_name)
-                for line in inventory.lines]
+                for line in inventory.lines if ((line.quantity or 0) < line.expected_quantity)]
         return defaults
 
     def default_result(self, fields):
