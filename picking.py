@@ -103,6 +103,7 @@ class StockPickingShipmentOut(Wizard):
 
         shipment = Shipment(self.scan.shipment)
         Shipment.assign([shipment])
+        Shipment.pick([shipment])
         Shipment.pack([shipment])
 
         return 'result'
