@@ -239,32 +239,6 @@ class StockScannerInventory(Wizard):
             if is_complete:
                 Inventory.complete_lines([inventory])
                 lines = inventory.lines
-                if lines:
-                    if self.ask.empty_quantity == 'empty':
-                        # set quantity to 0
-                        InventoryLine.write(list(lines), {'quantity': 0})
-                    elif self.ask.empty_quantity == 'keep':
-                        # set quantity to expected_quantity
-                        to_write = []
-                        product_ids = [l.product.id for l in inventory.lines]
-                        grouping = Inventory.grouping()
-                        with Transaction().set_context(stock_date_end=inventory_date):
-                            pbl = Product.products_by_location(
-                                [location.id],
-                                grouping=grouping,
-                                grouping_filter=(product_ids,))
-
-                        for line in inventory.lines:
-                            key = (location.id,) + line.unique_key
-                            if key in pbl:
-                                quantity = pbl.pop(key)
-                            else:
-                                quantity = 0.0
-                            values = line.update_values4complete(quantity)
-                            if values:
-                                to_write.extend(([line], values))
-                        if to_write:
-                            InventoryLine.write(*to_write)
 
         defaults['inventory'] = inventory.id
 
@@ -280,8 +254,8 @@ class StockScannerInventory(Wizard):
                 lines = inventory.lines
 
             defaults['lines'] = [u'<div align="left">'
-                '<font size="4">{} / {}<b>{}</b></font>'
-                '</div>'.format(line.quantity or 0, line.expected_quantity, line.product.rec_name)
+                '<font size="4">{} <b>{}</b></font>'
+                '</div>'.format(line.quantity or '', line.product.rec_name)
                 for line in lines]
 
             # complete inventory do control products that are picked and not show
