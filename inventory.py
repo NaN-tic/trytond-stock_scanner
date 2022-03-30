@@ -190,6 +190,7 @@ class StockScannerInventory(Wizard):
         self.scan.to_pick = None
         self.scan.lines = None
         self.scan.stop_complete_lines = False
+        self.scan.complete_lines = None
         return {}
 
     def default_scan(self, fields):
