@@ -29,5 +29,11 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             action="act_stock_scanner_inventory"
             id="menu_stock_scanner_inventory"
             sequence="50"/>
+
+        <record model="ir.ui.view" id="stock_scanner_move_list">
+            <field name="model">stock.inventory.line</field>
+            <field name="type">tree</field>
+            <field name="name">stock_scanner_move_list</field>
+        </record>
     </data>
 </tryton>
