@@ -147,7 +147,11 @@ class StockScanMixin(object):
             help='List of pending products to be scan.'),
         'get_pending_moves', setter='set_pending_moves')
     scannable_products = fields.Function(fields.Many2Many('product.product',
-            None, None, 'Scannable Products'),
+            None, None, 'Scannable Products',
+            context={
+                'company': Eval('company'),
+                },
+            depends=['company']),
         'get_scannable_products')
     scanned_product = fields.Many2One('product.product', 'Scanned product',
         domain=[
@@ -156,7 +160,10 @@ class StockScanMixin(object):
                 ('id', 'in', Eval('scannable_products')),
                 ()),
             ],
-        states=MIXIN_STATES, depends=['scannable_products', 'state'],
+        context={
+            'company': Eval('company'),
+            },
+        states=MIXIN_STATES, depends=['scannable_products', 'state', 'company'],
         help='Scan the code of the next product.')
     scanned_uom = fields.Many2One('product.uom', 'Scanned UoM', states={
             'readonly': True,
