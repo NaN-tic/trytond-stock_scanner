@@ -6,7 +6,6 @@ from trytond.pool import Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.pyson import Bool, Eval
-from trytond.transaction import Transaction
 
 
 class StockScannerInventoryAsk(ModelView):
@@ -126,7 +125,6 @@ class StockScannerInventory(Wizard):
         pool = Pool()
         InventoryLine = pool.get('stock.inventory.line')
         Product = pool.get('product.product')
-        Configuration = pool.get('stock.configuration')
 
         def qty(value):
             try:
@@ -134,7 +132,6 @@ class StockScannerInventory(Wizard):
             except ValueError:
                 return False
 
-        config = Configuration(1)
         to_pick = self.scan.to_pick
         quantity = qty(to_pick)
 
@@ -196,12 +193,7 @@ class StockScannerInventory(Wizard):
     def default_scan(self, fields):
         pool = Pool()
         Inventory = pool.get('stock.inventory')
-        InventoryLine = pool.get('stock.inventory.line')
         Date = pool.get('ir.date')
-        Configuration = pool.get('stock.configuration')
-        Product = pool.get('product.product')
-
-        config = Configuration(1)
 
         inventory = self.ask.inventory
         if inventory:
@@ -254,10 +246,16 @@ class StockScannerInventory(Wizard):
             else:
                 lines = inventory.lines
 
-            defaults['lines'] = [u'<div align="left">'
-                '<font size="4">{} <b>{}</b></font>'
-                '</div>'.format(line.quantity or '', line.product.rec_name)
-                for line in lines]
+            if self.ask.to_inventory == 'complete' or self.ask.inventory:
+                defaults['lines'] = [u'<div align="left">'
+                    '<font size="4">{} <b>{}</b></font>'
+                    '</div>'.format(line.expected_quantity or 0, line.product.rec_name)
+                    for line in lines]
+            else:
+                defaults['lines'] = [u'<div align="left">'
+                    '<font size="4">{} <b>{}</b></font>'
+                    '</div>'.format(line.quantity or 0, line.product.rec_name)
+                    for line in lines]
 
             # complete inventory do control products that are picked and not show
             if self.ask.load_complete_lines:
