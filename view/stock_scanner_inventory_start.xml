@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!-- This file is part stock_picking module for Tryton.
+The COPYRIGHT file at the top level of this repository contains the full copyright notices and license terms. -->
+<form col="2">
+    <label name="inventory"/>
+    <field name="inventory"/>
+    <label name="to_inventory"/>
+    <field name="to_inventory"/>
+    <label name="empty_quantity"/>
+    <field name="empty_quantity"/>
+    <label name="location"/>
+    <field name="location"/>
+    <label name="lost_found"/>
+    <field name="lost_found"/>
+    <field name="load_complete_lines" invisible="1"/>
+</form>
