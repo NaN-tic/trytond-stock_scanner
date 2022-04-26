@@ -22,6 +22,10 @@ msgctxt "field:stock.configuration,scanner_on_shipment_out_return:"
 msgid "Scanner on Customer Return Shipments?"
 msgstr "Escanejat a devolucions de client?"
 
+msgctxt "field:stock.configuration,scanner_pending_quantity:"
+msgid "Scanner Pending Quantity"
+msgstr "Quantitat pendent escaneig"
+
 msgctxt "field:stock.move,pending_quantity:"
 msgid "Pending Quantity"
 msgstr "Quantitat pendent"
@@ -63,6 +67,66 @@ msgid "Shipment"
 msgstr "Albarà"
 
 msgctxt "field:stock.picking.shipment.out.scan,to_pick:"
+msgid "To pick"
+msgstr "Per recollir"
+
+msgctxt "field:stock.scanner.inventory.ask,empty_quantity:"
+msgid "Empty Quantity"
+msgstr "Quantitat en blanc"
+
+msgctxt "field:stock.scanner.inventory.ask,inventory:"
+msgid "Inventory"
+msgstr "Inventari"
+
+msgctxt "field:stock.scanner.inventory.ask,load_complete_lines:"
+msgid "Load Complete Lines"
+msgstr "Completa línies completes"
+
+msgctxt "field:stock.scanner.inventory.ask,location:"
+msgid "Location"
+msgstr "Ubicació"
+
+msgctxt "field:stock.scanner.inventory.ask,lost_found:"
+msgid "Lost and Found"
+msgstr "Perdut i trobat"
+
+msgctxt "field:stock.scanner.inventory.ask,to_inventory:"
+msgid "To Pick"
+msgstr "Per recollir"
+
+msgctxt "field:stock.scanner.inventory.result,inventory:"
+msgid "Inventory"
+msgstr "Inventari"
+
+msgctxt "field:stock.scanner.inventory.scan,complete_lines:"
+msgid "Complete Lines"
+msgstr "Línies completes"
+
+msgctxt "field:stock.scanner.inventory.scan,inventory:"
+msgid "Inventory"
+msgstr "Inventari"
+
+msgctxt "field:stock.scanner.inventory.scan,lines:"
+msgid "Lines"
+msgstr "Línies"
+
+msgctxt "field:stock.scanner.inventory.scan,location:"
+msgid "Location"
+msgstr "Ubicació"
+
+msgctxt "field:stock.scanner.inventory.scan,lost_found:"
+msgid "Lost and Found"
+msgstr "Perdut i trobat"
+
+msgctxt "field:stock.scanner.inventory.scan,product:"
+msgid "Product"
+msgstr "Producte"
+
+msgctxt "field:stock.scanner.inventory.scan,stop_complete_lines:"
+msgid "Stop Complete Lines"
+msgstr "Finalitza completa línies"
+
+msgctxt "field:stock.scanner.inventory.scan,to_pick:"
 msgid "To pick"
 msgstr "Per recollir"
 
@@ -139,6 +203,10 @@ msgid "If marked pending quantity is loaded when product is scanned"
 msgstr ""
 "Si es marca, es carregara la quantitat pendent al escanejar un producte."
 
+msgctxt "help:stock.configuration,scanner_pending_quantity:"
+msgid "Quantity scanned are pending quantities"
+msgstr "Quantitats escanejades està pendent de quantitats"
+
 msgctxt "help:stock.move,pending_quantity:"
 msgid "Quantity pending to be scanned"
 msgstr "Quantitat pendent d'escanejar"
@@ -183,6 +251,10 @@ msgctxt "model:ir.action,name:act_stock_picking_shipment_out"
 msgid "Shipment Out Picking"
 msgstr "Recollir albarà de client"
 
+msgctxt "model:ir.action,name:act_stock_scanner_inventory"
+msgid "Stock Scanner Inventory"
+msgstr "Inventari escaneig"
+
 msgctxt "model:ir.message,text:msg_scan_all"
 msgid ""
 "Are you sure you want to scan all pending moves and leave them as received? "
@@ -190,6 +262,12 @@ msgid ""
 msgstr ""
 "Esteu segurs de voler escanejar tots els moviments i passar a rebut? Aquesta"
 " acció no es pot desfer."
+
+msgctxt "model:ir.message,text:msg_scan_inventory_location"
+msgid "From location and to location type are not lost found and storage"
+msgstr ""
+"El tipus \"desde la ubicació\" i \"a la ubicació\" no és perdut-trobat i "
+"interna"
 
 msgctxt "model:ir.model.button,string:shipment_in_reset_button"
 msgid "Reset Scanned Quantities"
@@ -227,6 +305,10 @@ msgctxt "model:ir.model.button,string:shipment_out_scan_button"
 msgid "Scan"
 msgstr "Escaneja"
 
+msgctxt "model:ir.ui.menu,name:menu_stock_scanner_inventory"
+msgid "Scanner Inventory"
+msgstr "Escaneig d'inventari"
+
 msgctxt "model:ir.ui.menu,name:menu_stock_shipment_out_picking"
 msgid "Shipment Out Picking"
 msgstr "Recollir albarans de client"
@@ -247,6 +329,34 @@ msgctxt "model:stock.picking.shipment.out.scan,name:"
 msgid "Stock Picking Shipment Out Scan"
 msgstr "Escanner recollida albarà de client"
 
+msgctxt "model:stock.scanner.inventory.ask,name:"
+msgid "Stock Scanner Inventory Ask"
+msgstr "Inici escaneig inventari"
+
+msgctxt "model:stock.scanner.inventory.result,name:"
+msgid "Stock Scanner Inventory Result"
+msgstr "Resultat inventari stock scanner"
+
+msgctxt "model:stock.scanner.inventory.scan,name:"
+msgid "Stock Scanner Inventory Scan"
+msgstr "Escaneig d'inventari"
+
+msgctxt "selection:stock.scanner.inventory.ask,empty_quantity:"
+msgid "Empty"
+msgstr "Buit"
+
+msgctxt "selection:stock.scanner.inventory.ask,empty_quantity:"
+msgid "Keep"
+msgstr "Manté"
+
+msgctxt "selection:stock.scanner.inventory.ask,to_inventory:"
+msgid "Complete"
+msgstr "Completa"
+
+msgctxt "selection:stock.scanner.inventory.ask,to_inventory:"
+msgid "Products"
+msgstr "Productes"
+
 msgctxt "view:stock.configuration:"
 msgid "Scanning Configuration"
 msgstr "Configuració escanejat"
@@ -262,6 +372,10 @@ msgstr "Moviments pendents"
 msgctxt "view:stock.picking.shipment.out.result:"
 msgid "Done picking shipment"
 msgstr "Finalitzar recollida d'albarà"
+
+msgctxt "view:stock.scanner.inventory.result:"
+msgid "Done Inventory"
+msgstr "Inventari finalitzat"
 
 msgctxt "view:stock.shipment.in:"
 msgid "Scan"
@@ -320,5 +434,25 @@ msgid "Packed"
 msgstr "Empaquetat"
 
 msgctxt "wizard_button:stock.picking.shipment.out,scan,pick:"
+msgid "Pick"
+msgstr "Recollir"
+
+msgctxt "wizard_button:stock.scanner.inventory,ask,end:"
+msgid "Cancel"
+msgstr "Cancel·la"
+
+msgctxt "wizard_button:stock.scanner.inventory,ask,scan:"
+msgid "Scan"
+msgstr "Escaneja"
+
+msgctxt "wizard_button:stock.scanner.inventory,result,ask:"
+msgid "Start"
+msgstr "Inici"
+
+msgctxt "wizard_button:stock.scanner.inventory,result,end:"
+msgid "Done"
+msgstr "Finalitzat"
+
+msgctxt "wizard_button:stock.scanner.inventory,scan,pick:"
 msgid "Pick"
 msgstr "Recollir"
