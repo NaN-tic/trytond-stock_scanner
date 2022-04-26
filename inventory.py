@@ -58,10 +58,6 @@ class StockScannerInventoryAsk(ModelView):
     def default_load_complete_lines():
         return False
 
-    @staticmethod
-    def default_stop_load_complete_lines():
-        return False
-
     @fields.depends('inventory')
     def on_change_inventory(self):
         self.load_complete_lines = True if self.inventory else False
