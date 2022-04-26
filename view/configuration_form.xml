@@ -15,6 +15,8 @@
             <field name="scanner_on_shipment_out_return"/>
             <label name="scanner_fill_quantity"/>
             <field name="scanner_fill_quantity"/>
+            <label name="scanner_pending_quantity"/>
+            <field name="scanner_pending_quantity"/>
          </group>
     </xpath>
 </data>
