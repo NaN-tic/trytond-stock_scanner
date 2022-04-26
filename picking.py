@@ -63,6 +63,7 @@ class StockPickingShipmentOut(Wizard):
     def transition_pick(self):
         pool = Pool()
         Shipment = pool.get('stock.shipment.out')
+        Move = pool.get('stock.move')
 
         shipment = Shipment(self.scan.shipment)
 
@@ -76,11 +77,19 @@ class StockPickingShipmentOut(Wizard):
         to_pick = self.scan.to_pick
         quantity = qty(to_pick)
 
-        if shipment.scanned_product and quantity and len(to_pick) < 5:
-            shipment.scanned_quantity = shipment.scanned_uom.round(quantity)
-            shipment.save()
-            Shipment.scan([shipment])
-            shipment = Shipment(shipment.id)
+        if (shipment.scanned_product and (quantity or quantity == 0.0)
+                and len(to_pick) < 5):
+            # picking is 0 means set scanned_quantity and quantity are 0
+            if quantity == 0.0:
+                moves = shipment.get_matching_moves()
+                Move.write(moves, {'scanned_quantity': 0.0, 'quantity': 0.0})
+                shipment.clear_scan_values()
+                shipment.save()
+            else:
+                shipment.scanned_quantity = shipment.scanned_uom.round(quantity)
+                shipment.save()
+                Shipment.scan([shipment])
+                shipment = Shipment(shipment.id)
         else:
             for move in shipment.pending_moves:
                 if move.matches_scan(to_pick):

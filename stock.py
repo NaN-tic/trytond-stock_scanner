@@ -78,11 +78,13 @@ class Move(metaclass=PoolMeta):
 
     @classmethod
     def get_pending_quantity(cls, moves, name):
-        quantity = {}
+        quantities = dict((x.id, 0.0) for x in moves)
         for move in moves:
-            quantity[move.id] = move.uom.round(
-                move.quantity - (move.scanned_quantity or 0.0))
-        return quantity
+            quantity = move.quantity
+            scanned_quantity = move.scanned_quantity or 0.0
+            if (quantity >= scanned_quantity):
+                quantities[move.id] = move.uom.round(quantity - scanned_quantity)
+        return quantities
 
     @classmethod
     def search_pending_quantity(cls, name, domain):
