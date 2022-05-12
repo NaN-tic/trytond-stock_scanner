@@ -263,8 +263,6 @@ class StockScanMixin(object):
             scanned_move = scanned_moves[0]
             self.scanned_uom = scanned_move.uom
 
-            self.scanned_product_unit_digits = (
-                self.on_change_with_scanned_product_unit_digits())
             if config.scanner_fill_quantity:
                 self.scanned_quantity = (scanned_move.pending_quantity
                     if config.scanner_pending_quantity else 1)
