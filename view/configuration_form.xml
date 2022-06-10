@@ -17,6 +17,8 @@
             <field name="scanner_fill_quantity"/>
             <label name="scanner_pending_quantity"/>
             <field name="scanner_pending_quantity"/>
+            <label name="scanner_picking_check"/>
+            <field name="scanner_picking_check"/>
          </group>
     </xpath>
 </data>

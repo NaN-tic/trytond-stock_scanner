@@ -9,5 +9,8 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.message" id="msg_scan_inventory_location">
             <field name="text">From location and to location type are not lost found and storage</field>
         </record>
+        <record model="ir.message" id="msg_product_not_found">
+            <field name="text">Not found "%(product)s" product</field>
+        </record>
     </data>
 </tryton>

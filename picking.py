@@ -3,6 +3,8 @@
 from trytond.model import ModelView, fields
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.pool import Pool
+from trytond.i18n import gettext
+from trytond.exceptions import UserError
 
 
 class StockPickingShipmentOutAsk(ModelView):
@@ -64,7 +66,9 @@ class StockPickingShipmentOut(Wizard):
         pool = Pool()
         Shipment = pool.get('stock.shipment.out')
         Move = pool.get('stock.move')
+        StockConfiguration = pool.get('stock.configuration')
 
+        configuration = StockConfiguration(1)
         shipment = Shipment(self.scan.shipment)
 
         def qty(value):
@@ -103,7 +107,12 @@ class StockPickingShipmentOut(Wizard):
                     shipment.save()
                     break
             else:
+                if configuration.scanner_picking_check:
+                    raise UserError(
+                        gettext('stock_scanner.msg_product_not_found',
+                        product=to_pick))
                 self.scan.product = None
+
         return 'scan'
 
     def transition_packed(self):
