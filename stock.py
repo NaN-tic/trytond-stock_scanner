@@ -5,7 +5,7 @@ from trytond.pyson import Bool, Eval, If, And
 from trytond.pool import Pool, PoolMeta
 from trytond.model.exceptions import AccessError
 from trytond.modules.stock.move import STATES
-from trytond.exceptions import UserWarning
+from trytond.exceptions import UserWarning, UserError
 from trytond.i18n import gettext
 from operator import itemgetter
 import datetime
@@ -346,6 +346,8 @@ class StockScanMixin(object):
     def process_moves(self, moves):
         pool = Pool()
         Uom = pool.get('product.uom')
+        StockConfiguration = pool.get('stock.configuration')
+        configuration = StockConfiguration(1)
 
         if (not self.scanned_quantity or not self.scanned_uom
                 or self.scanned_quantity < self.scanned_uom.rounding):
@@ -381,6 +383,9 @@ class StockScanMixin(object):
                 found_move.scanned_quantity += scanned_qty_move_uom
             else:
                 found_move.scanned_quantity = scanned_qty_move_uom
+            if (found_move.scanned_quantity > found_move.quantity and
+                    configuration.scanner_picking_check):
+                raise UserError(gettext('stock_scanner.msg_scanned_quantity'))
             found_move.save()
             return found_move
 

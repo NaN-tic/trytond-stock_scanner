@@ -26,6 +26,10 @@ msgctxt "field:stock.configuration,scanner_pending_quantity:"
 msgid "Scanner Pending Quantity"
 msgstr "Quantitat pendent escaneig"
 
+msgctxt "field:stock.configuration,scanner_picking_check:"
+msgid "Scanner Picking Check"
+msgstr "Comprovar albarà a escanejar"
+
 msgctxt "field:stock.move,pending_quantity:"
 msgid "Pending Quantity"
 msgstr "Quantitat pendent"
@@ -267,6 +271,10 @@ msgctxt "model:ir.action,name:act_stock_scanner_inventory"
 msgid "Stock Scanner Inventory"
 msgstr "Inventari escaneig"
 
+msgctxt "model:ir.message,text:msg_product_not_found"
+msgid "Not found \"%(product)s\" product"
+msgstr "El producte \"%(product)s\" no el tenim a l'albarà"
+
 msgctxt "model:ir.message,text:msg_scan_all"
 msgid ""
 "Are you sure you want to scan all pending moves and leave them as received? "
@@ -280,6 +288,10 @@ msgid "From location and to location type are not lost found and storage"
 msgstr ""
 "El tipus \"desde la ubicació\" i \"a la ubicació\" no és perdut-trobat i "
 "interna"
+
+msgctxt "model:ir.message,text:msg_scanned_quantity"
+msgid "Scanned quantity greater than move quantity."
+msgstr "Quantitat escanejada major que la quantitat del moviment."
 
 msgctxt "model:ir.model.button,string:shipment_in_reset_button"
 msgid "Reset Scanned Quantities"
