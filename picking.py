@@ -92,7 +92,10 @@ class StockPickingShipmentOut(Wizard):
             else:
                 shipment.scanned_quantity = shipment.scanned_uom.round(quantity)
                 shipment.save()
+                product = shipment.scanned_product
                 Shipment.scan([shipment])
+                shipment.scanned_product = product
+                shipment.save()
                 shipment = Shipment(shipment.id)
         else:
             for move in shipment.pending_moves:
@@ -111,7 +114,6 @@ class StockPickingShipmentOut(Wizard):
                     raise UserError(
                         gettext('stock_scanner.msg_product_not_found',
                         product=to_pick))
-                self.scan.product = None
 
         return 'scan'
 
