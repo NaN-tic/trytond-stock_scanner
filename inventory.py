@@ -21,13 +21,6 @@ class StockScannerInventoryAsk(ModelView):
             'invisible': Bool(Eval('inventory')),
             'required': ~Bool(Eval('inventory')),
         }, depends=['inventory'])
-    lost_found = fields.Many2One('stock.location', "Lost and Found",
-        domain=[
-            ('type', '=', 'lost_found'),
-        ], states={
-            'invisible': Bool(Eval('inventory')),
-            'required': ~Bool(Eval('inventory')),
-        }, depends=['inventory'])
     to_inventory = fields.Selection([
         ('complete', 'Complete'),
         ('products', 'Products'),
@@ -75,15 +68,11 @@ class StockScannerInventoryScan(ModelView):
         domain=[
             ('type', '=','storage'),
         ], readonly=True)
-    lost_found = fields.Many2One('stock.location', "Lost and Found",
-        domain=[
-            ('type', '=', 'lost_found'),
-        ], readonly=True)
     product = fields.Many2One('product.product', "Product", readonly=True)
     to_pick = fields.Char("To pick")
     lines = fields.Text("Lines", readonly=True)
-    complete_lines = fields.One2Many('stock.inventory.line', 'inventory',
-        "Complete Lines", readonly=True)
+    complete_lines = fields.One2Many('stock.inventory.line', None,
+        "Complete Lines")
     stop_complete_lines = fields.Boolean("Stop Complete Lines", readonly=True)
 
 
@@ -151,7 +140,6 @@ class StockScannerInventory(Wizard):
             if products:
                 product, = products
                 products = set([line.product for line in self.scan.inventory.lines])
-
                 if product not in products:
                     line = InventoryLine()
                     line.inventory = self.scan.inventory
@@ -178,7 +166,6 @@ class StockScannerInventory(Wizard):
         # reset values in case start first step
         self.scan.inventory = None
         self.scan.location = None
-        self.scan.lost_found = None
         self.scan.product = None
         self.scan.to_pick = None
         self.scan.lines = None
@@ -194,21 +181,11 @@ class StockScannerInventory(Wizard):
         inventory = self.ask.inventory
         if inventory:
             location = inventory.location
-            lost_found = inventory.lost_found
         else:
             location = self.ask.location
-            lost_found = self.ask.lost_found
-
-        # control are lost_found and storage location type
-        if len(set((location.type, lost_found.type))) != 2:
-            # self.ask.from_location = None
-            # self.ask.to_location = None
-            raise UserError(
-                gettext('stock_scanner.msg_scan_inventory_location'))
 
         defaults = {}
         defaults['location'] = location.id
-        defaults['lost_found'] = lost_found.id
 
         if hasattr(self.scan, 'inventory') and self.scan.inventory:
             inventory = self.scan.inventory
@@ -220,7 +197,6 @@ class StockScannerInventory(Wizard):
 
             inventory = Inventory()
             inventory.location = location
-            inventory.lost_found = lost_found
             inventory.date = inventory_date
             if is_complete:
                 inventory.empty_quantity = self.ask.empty_quantity
@@ -243,15 +219,15 @@ class StockScannerInventory(Wizard):
                 lines = inventory.lines
 
             if self.ask.to_inventory == 'complete' or self.ask.inventory:
-                defaults['lines'] = [u'<div align="left">'
+                defaults['lines'] = '\n'.join(['<div align="left">'
                     '<font size="4">{} <b>{}</b></font>'
                     '</div>'.format(line.expected_quantity or 0, line.product.rec_name)
-                    for line in lines]
+                    for line in lines])
             else:
-                defaults['lines'] = [u'<div align="left">'
+                defaults['lines'] = '\n'.join(['<div align="left">'
                     '<font size="4">{} <b>{}</b></font>'
                     '</div>'.format(line.quantity or 0, line.product.rec_name)
-                    for line in lines]
+                    for line in lines])
 
             # complete inventory do control products that are picked and not show
             if self.ask.load_complete_lines:
