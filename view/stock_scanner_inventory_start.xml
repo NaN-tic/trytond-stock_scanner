@@ -10,7 +10,5 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
     <field name="empty_quantity"/>
     <label name="location"/>
     <field name="location"/>
-    <label name="lost_found"/>
-    <field name="lost_found"/>
     <field name="load_complete_lines" invisible="1"/>
 </form>
