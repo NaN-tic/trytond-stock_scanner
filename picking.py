@@ -3,6 +3,7 @@
 from trytond.model import ModelView, fields
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.pool import Pool
+from trytond.transaction import Transaction
 
 
 class StockPickingShipmentOutAsk(ModelView):
@@ -110,10 +111,11 @@ class StockPickingShipmentOut(Wizard):
         pool = Pool()
         Shipment = pool.get('stock.shipment.out')
 
-        shipment = Shipment(self.scan.shipment)
-        Shipment.assign([shipment])
-        Shipment.pick([shipment])
-        Shipment.pack([shipment])
+        with Transaction().set_context(_skip_warnings=True):
+            shipment = Shipment(self.scan.shipment)
+            Shipment.assign([shipment])
+            Shipment.pick([shipment])
+            Shipment.pack([shipment])
 
         return 'result'
 
