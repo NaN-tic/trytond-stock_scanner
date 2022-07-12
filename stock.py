@@ -53,7 +53,9 @@ class Configuration(metaclass=PoolMeta):
 class Move(metaclass=PoolMeta):
     __name__ = 'stock.move'
     scanned_quantity = fields.Float('Scanned Quantity',
-        digits='uom', states=STATES, depends=['state'])
+        digits='uom', states={
+            'readonly': Eval('state').in_(['cancelled', 'done']),
+        }, depends=['state'])
     pending_quantity = fields.Function(fields.Float('Pending Quantity',
         digits='uom', help='Quantity pending to be scanned'),
         'get_pending_quantity', searcher='search_pending_quantity')
@@ -187,16 +189,19 @@ class StockScanMixin(object):
                     'invisible': ~And(
                             Eval('pending_moves', False),
                             Bool(Eval('scanned_product'))),
+                    'depends': ['pending_moves', 'scanned_product'],
                 },
                 'reset_scanned_quantities': {
                     'icon': 'tryton-refresh',
                     'invisible': ~Eval('state').in_(['waiting', 'draft',
-                            'assigned'])
+                            'assigned']),
+                    'depends': ['state'],
                 },
                 'scan_all': {
                     'icon': 'tryton-warning',
                     'invisible': ~Eval('state').in_(['waiting', 'draft',
-                            'assigned'])
+                            'assigned']),
+                    'depends': ['state'],
                 },
                 })
         cls._scanner_allow_delete = ['stock.shipment.in']
