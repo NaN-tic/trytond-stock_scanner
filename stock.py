@@ -471,7 +471,7 @@ class ShipmentOut(StockScanMixin, metaclass=PoolMeta):
     @classmethod
     def pick(cls, shipments):
         cls.set_scanned_quantity_as_quantity(shipments, 'inventory_moves')
-        return super(ShipmentOut, cls).pick(shipments)
+        super(ShipmentOut, cls).pick(shipments)
 
 
 class ShipmentOutReturn(ShipmentOut, metaclass=PoolMeta):
