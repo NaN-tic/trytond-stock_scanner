@@ -102,22 +102,6 @@ class Move(metaclass=PoolMeta):
         return [('id', 'in', query)]
 
     @classmethod
-    def write(cls, *args):
-        actions = iter(args)
-        for moves, values in zip(actions, actions):
-            # Ensure quantity is not set to a value greater than the one
-            # assigned, given that we remove 'quantity' from
-            # cls._deny_modify_assigned in __setup__
-            if 'quantity' in values:
-                for move in moves:
-                    if (move.state == 'assigned'
-                            and float(values['quantity']) > move.quantity):
-                        raise AccessError(
-                            gettext('stock.msg_move_modify_assigned',
-                                move=move.rec_name))
-        super(Move, cls).write(*args)
-
-    @classmethod
     def copy(cls, moves, default=None):
         if default is None:
             default = {}
