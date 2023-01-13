@@ -243,15 +243,15 @@ class StockScannerInventory(Wizard):
                 lines = inventory.lines
 
             if self.ask.to_inventory == 'complete' or self.ask.inventory:
-                defaults['lines'] = [u'<div align="left">'
+                defaults['lines'] = '\n'.join([u'<div align="left">'
                     '<font size="4">{} <b>{}</b></font>'
                     '</div>'.format(line.expected_quantity or 0, line.product.rec_name)
-                    for line in lines]
+                    for line in lines])
             else:
-                defaults['lines'] = [u'<div align="left">'
+                defaults['lines'] = '\n'.join([u'<div align="left">'
                     '<font size="4">{} <b>{}</b></font>'
                     '</div>'.format(line.quantity or 0, line.product.rec_name)
-                    for line in lines]
+                    for line in lines])
 
             # complete inventory do control products that are picked and not show
             if self.ask.load_complete_lines:
