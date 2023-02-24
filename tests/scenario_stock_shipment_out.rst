@@ -153,7 +153,6 @@ Make 1 unit of the product available::
 Scan one unit of the shipment and assign it::
 
     >>> shipment_out.click('assign_try')
-    False
     >>> shipment_out.reload()
     >>> move, _ = sorted(shipment_out.pending_moves, key=lambda x: x.quantity)
     >>> move.quantity == 1.0
