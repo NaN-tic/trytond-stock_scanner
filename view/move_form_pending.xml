@@ -6,8 +6,8 @@
     <field name="product"/>
     <label name="quantity"/>
     <field name="quantity"/>
-    <label name="uom"/>
-    <field name="uom"/>
+    <label name="unit"/>
+    <field name="unit"/>
     <label name="scanned_quantity"/>
     <field name="scanned_quantity"/>
     <label name="pending_quantity"/>

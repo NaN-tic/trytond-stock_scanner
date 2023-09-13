@@ -53,11 +53,11 @@ class Configuration(metaclass=PoolMeta):
 class Move(metaclass=PoolMeta):
     __name__ = 'stock.move'
     scanned_quantity = fields.Float('Scanned Quantity',
-        digits='uom', states={
+        digits='unit', states={
             'readonly': Eval('state').in_(['cancelled', 'done']),
         }, depends=['state'])
     pending_quantity = fields.Function(fields.Float('Pending Quantity',
-        digits='uom', help='Quantity pending to be scanned'),
+        digits='unit', help='Quantity pending to be scanned'),
         'get_pending_quantity', searcher='search_pending_quantity')
 
     @classmethod
@@ -85,7 +85,7 @@ class Move(metaclass=PoolMeta):
             quantity = move.quantity
             scanned_quantity = move.scanned_quantity or 0.0
             if (quantity >= scanned_quantity):
-                quantities[move.id] = move.uom.round(quantity - scanned_quantity)
+                quantities[move.id] = move.unit.round(quantity - scanned_quantity)
         return quantities
 
     @classmethod
@@ -250,7 +250,7 @@ class StockScanMixin(object):
         scanned_moves = self.get_matching_moves()
         if scanned_moves:
             scanned_move = scanned_moves[0]
-            self.scanned_uom = scanned_move.uom
+            self.scanned_uom = scanned_move.unit
 
             if config.scanner_fill_quantity:
                 self.scanned_quantity = (scanned_move.pending_quantity
@@ -296,7 +296,7 @@ class StockScanMixin(object):
             for move in pending_moves:
                 shipment.scanned_product = move.product
                 shipment.scanned_quantity = move.quantity
-                shipment.scanned_uom = move.uom
+                shipment.scanned_uom = move.unit
                 shipment.process_moves([move])
                 shipment.clear_scan_values()
                 to_save.append(shipment)
@@ -309,7 +309,7 @@ class StockScanMixin(object):
         move = Move()
         move.company = self.company
         move.product = self.scanned_product
-        move.uom = self.scanned_uom
+        move.unit = self.scanned_uom
         move.quantity = self.scanned_quantity
         move.shipment = str(self)
         move.planned_date = self.planned_date
@@ -332,9 +332,9 @@ class StockScanMixin(object):
         for move in moves:
             # find move with the same quantity
             scanned_qty_in_move_uom = Uom.compute_qty(self.scanned_uom,
-                self.scanned_quantity, move.uom, round=False)
+                self.scanned_quantity, move.unit, round=False)
             if (abs(move.pending_quantity - scanned_qty_in_move_uom)
-                    < move.uom.rounding):
+                    < move.unit.rounding):
                 move.scanned_quantity = move.quantity
                 move.save()
                 return move
@@ -344,7 +344,7 @@ class StockScanMixin(object):
         found_move = None
         for move in moves:
             scanned_qty_move_uom = Uom.compute_qty(self.scanned_uom,
-                self.scanned_quantity, move.uom, round=False)
+                self.scanned_quantity, move.unit, round=False)
             found_move = move
             if move.quantity > scanned_qty_move_uom:
                 break
