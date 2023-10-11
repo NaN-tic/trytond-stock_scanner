@@ -3,8 +3,6 @@
 from trytond.model import Workflow, ModelView, fields
 from trytond.pyson import Bool, Eval, If, And
 from trytond.pool import Pool, PoolMeta
-from trytond.model.exceptions import AccessError
-from trytond.modules.stock.move import STATES
 from trytond.exceptions import UserWarning
 from trytond.i18n import gettext
 from operator import itemgetter

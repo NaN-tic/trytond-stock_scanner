@@ -3,8 +3,6 @@
 from trytond.model import ModelView, fields
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.pool import Pool
-from trytond.exceptions import UserError
-from trytond.i18n import gettext
 from trytond.pyson import Bool, Eval
 
 
