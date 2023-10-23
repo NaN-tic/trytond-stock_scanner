@@ -79,7 +79,7 @@ class StockPickingShipmentOut(Wizard):
         quantity = qty(to_pick)
 
         if (shipment.scanned_product and (quantity or quantity == 0.0)
-                and len(to_pick) < 5):
+                and len(str(int(quantity))) < 5):
             # picking is 0 means set scanned_quantity and quantity are 0
             if quantity == 0.0:
                 moves = shipment.get_matching_moves()
