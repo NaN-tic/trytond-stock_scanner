@@ -72,14 +72,14 @@ class StockPickingShipmentOut(Wizard):
             try:
                 return float(value)
             except ValueError:
-                return False
+                return
 
         shipment = Shipment(self.scan.shipment)
         to_pick = self.scan.to_pick
         quantity = qty(to_pick)
 
-        if (shipment.scanned_product and (quantity or quantity == 0.0)
-                and len(str(int(quantity))) < 5):
+        if (shipment.scanned_product and (quantity is not None
+                and len(str(int(quantity))) < 5)):
             # picking is 0 means set scanned_quantity and quantity are 0
             if quantity == 0.0:
                 moves = shipment.get_matching_moves()
