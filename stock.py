@@ -140,7 +140,7 @@ class StockScanMixin(object):
     scannable_products = fields.Function(fields.Many2Many('product.product',
             None, None, 'Scannable Products',
             context={
-                'company': Eval('company'),
+                'company': Eval('company', -1),
                 },
             depends=['company']),
         'get_scannable_products')
@@ -152,7 +152,7 @@ class StockScanMixin(object):
                 ()),
             ],
         context={
-            'company': Eval('company'),
+            'company': Eval('company', -1),
             },
         states=MIXIN_STATES, depends=['scannable_products', 'state', 'company'],
         help='Scan the code of the next product.')
