@@ -202,7 +202,8 @@ class StockScanMixin(object):
         return {}.fromkeys([s.id for s in shipments], scanner_enabled)
 
     def get_pending_moves(self, name):
-        return [x.id for x in self.get_pick_moves() if x.pending_quantity > 0]
+        return [x.id for x in self.get_pick_moves()
+            if (x.pending_quantity > 0 and x.state not in ('cancelled', 'done'))]
 
     @classmethod
     def set_pending_moves(cls, shipments, name, value):
