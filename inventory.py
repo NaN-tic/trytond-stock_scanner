@@ -18,7 +18,7 @@ class StockScannerInventoryAsk(ModelView):
         ], states={
             'invisible': Bool(Eval('inventory')),
             'required': ~Bool(Eval('inventory')),
-        }, depends=['inventory'])
+        })
     to_inventory = fields.Selection([
         ('complete', 'Complete'),
         ('products', 'Products'),
@@ -26,7 +26,7 @@ class StockScannerInventoryAsk(ModelView):
         states={
             'invisible': Bool(Eval('inventory')),
             'required': ~Bool(Eval('inventory')),
-        }, depends=['inventory'])
+        })
     empty_quantity = fields.Selection([
         ('keep', "Keep"),
         ('empty', "Empty"),
@@ -34,7 +34,7 @@ class StockScannerInventoryAsk(ModelView):
             'invisible': (
                 (Eval('to_inventory') != 'complete') | Bool(Eval('inventory'))),
             'required': Eval('to_inventory') == 'complete'
-        }, depends=['to_inventory', 'inventory'])
+        })
     load_complete_lines = fields.Boolean("Load Complete Lines", readonly=True)
 
     @staticmethod

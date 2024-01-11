@@ -32,7 +32,7 @@ class Configuration(metaclass=PoolMeta):
     scanner_pending_quantity = fields.Boolean("Scanner Pending Quantity",
         states={
             'invisible': ~Eval('scanner_fill_quantity'),
-        }, depends=['scanner_fill_quantity'],
+        },
         help="Quantity scanned are pending quantities")
 
     @classmethod
@@ -53,7 +53,7 @@ class Move(metaclass=PoolMeta):
     scanned_quantity = fields.Float('Scanned Quantity',
         digits='unit', states={
             'readonly': Eval('state').in_(['cancelled', 'done']),
-        }, depends=['state'])
+        })
     pending_quantity = fields.Function(fields.Float('Pending Quantity',
         digits='unit', help='Quantity pending to be scanned'),
         'get_pending_quantity', searcher='search_pending_quantity')
