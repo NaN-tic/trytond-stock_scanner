@@ -134,8 +134,7 @@ class StockScanMixin(object):
                 'invisible': (~Eval('scanner_enabled', False)
                     | ~Eval('state', 'draft').in_(['waiting', 'draft',
                             'assigned'])),
-                }, depends=['scanner_enabled', 'state'],
-            help='List of pending products to be scan.'),
+                }, help='List of pending products to be scan.'),
         'get_pending_moves', setter='set_pending_moves')
     scannable_products = fields.Function(fields.Many2Many('product.product',
             None, None, 'Scannable Products',
@@ -154,14 +153,13 @@ class StockScanMixin(object):
         context={
             'company': Eval('company', -1),
             },
-        states=MIXIN_STATES, depends=['scannable_products', 'state', 'company'],
+        states=MIXIN_STATES, depends=['company'],
         help='Scan the code of the next product.')
     scanned_uom = fields.Many2One('product.uom', 'Scanned UoM', states={
             'readonly': True,
         })
     scanned_quantity = fields.Float('Quantity', 'scanned_uom',
-        states=MIXIN_STATES, depends=['state'],
-        help='Quantity of the scanned product.')
+        states=MIXIN_STATES, help='Quantity of the scanned product.')
 
     @classmethod
     def __setup__(cls):
