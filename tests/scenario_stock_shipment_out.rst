@@ -185,6 +185,13 @@ Scan one unit of the shipment and assign it::
     >>> move.quantity == 10.0
     True
 
+    >>> shipment_out.scanned_product = product
+    >>> shipment_out.scanned_quantity = 9.0
+    >>> shipment_out.click('scan')
+    >>> shipment_out.reload()
+    >>> shipment_out.pending_moves == []
+    True
+
 Set the state as Done::
 
     >>> shipment_out.click('pick')
