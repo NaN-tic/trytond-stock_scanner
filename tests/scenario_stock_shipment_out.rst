@@ -196,7 +196,7 @@ Set the state as Done::
     >>> shipment_out.click('pick')
     >>> shipment_out.click('pack')
     >>> move, _ = sorted(shipment_out.inventory_moves, key=lambda x: x.quantity)
-    >>> shipment_out.click('done')
+    >>> shipment_out.click('do')
     >>> len(shipment_out.outgoing_moves)
     1
     >>> len(shipment_out.inventory_moves)
