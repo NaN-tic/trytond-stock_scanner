@@ -13,6 +13,11 @@ class StockPickingShipmentOutAsk(ModelView):
     to_pick = fields.Selection('get_to_pick', 'To Pick', sort=True)
 
     @classmethod
+    def __post_setup__(cls):
+        super().__post_setup__()
+        cls.__rpc__['get_to_pick'].cache = None
+
+    @classmethod
     def get_to_pick(cls):
         pool = Pool()
         Shipment = pool.get('stock.shipment.out')
