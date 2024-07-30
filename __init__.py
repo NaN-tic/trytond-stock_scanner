@@ -15,6 +15,7 @@ def register():
         stock.ShipmentIn,
         stock.ShipmentOut,
         stock.ShipmentOutReturn,
+        stock.ShipmentInternal,
         picking.StockPickingShipmentOutAsk,
         picking.StockPickingShipmentOutScan,
         picking.StockPickingShipmentOutResult,
