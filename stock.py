@@ -1,6 +1,6 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-from trytond.model import Workflow, ModelView, fields
+from trytond.model import Workflow, ModelView, fields, dualmethod
 from trytond.pyson import Bool, Eval, If, And
 from trytond.pool import Pool, PoolMeta
 from trytond.exceptions import UserWarning
@@ -21,6 +21,7 @@ MIXIN_STATES = {
 class Configuration(metaclass=PoolMeta):
     __name__ = 'stock.configuration'
 
+    scanner_on_shipment_internal = fields.Boolean('Scanner on InternalShipments?')
     scanner_on_shipment_in = fields.Boolean('Scanner on Supplier Shipments?')
     scanner_on_shipment_in_return = fields.Boolean(
         'Scanner on Supplier Return Shipments?')
@@ -38,6 +39,8 @@ class Configuration(metaclass=PoolMeta):
     @classmethod
     def scanner_on_shipment_type(cls, shipment_type):
         config = cls(1)
+        if shipment_type == 'stock.shipment.internal':
+            return config.scanner_on_shipment_internal
         if shipment_type == 'stock.shipment.in':
             return config.scanner_on_shipment_in
         if shipment_type == 'stock.shipment.in.return':
@@ -455,3 +458,67 @@ class ShipmentOutReturn(ShipmentOut, metaclass=PoolMeta):
     def receive(cls, shipments):
         cls.set_scanned_quantity_as_quantity(shipments, 'incoming_moves')
         super(ShipmentOutReturn, cls).receive(shipments)
+
+
+class ShipmentInternal(StockScanMixin, metaclass=PoolMeta):
+    __name__ = 'stock.shipment.internal'
+
+    def get_pick_moves(self):
+        if self.transit_location:
+            return self.incoming_moves
+        else:
+            return self.moves
+
+    @classmethod
+    def receive(cls, shipments):
+        cls.set_scanned_quantity_as_quantity(shipments, 'incoming_moves')
+        super().receive(shipments)
+
+    def get_pending_moves(self, name):
+        moves = [move for move in self.get_pick_moves() if
+            move.pending_quantity > 0]
+        tuples = []
+        for move in moves:
+            if move.origin and hasattr(move.origin, 'purchase'):
+                tuples.append((move, move.origin.purchase.purchase_date))
+            else:
+                tuples.append((move, datetime.date.today()))
+        tuples = sorted(tuples, key=itemgetter(1))
+        moves = [x[0].id for x in tuples]
+        return moves
+
+    @dualmethod
+    def assign_try(cls, shipments):
+        print("holaaaaaa")
+        for shipment in shipments:
+            field_name = 'moves'
+            if shipment.transit_location:
+                field_name = 'outgoing_moves'
+            print("field_name:", field_name)
+            print("shipment:", shipment.moves)
+            cls.set_scanned_quantity_as_quantity([shipment], field_name)
+        super().assign(shipments)
+
+
+
+    @classmethod
+    def assign(cls, shipments):
+        print("holaaaaaa2 ")
+        for shipment in shipments:
+            field_name = 'moves'
+            if shipment.transit_location:
+                field_name = 'outgoing_moves'
+            cls.set_scanned_quantity_as_quantity([shipment], field_name)
+        super().assign(shipments)
+
+
+
+
+
+
+
+
+
+
+
+
