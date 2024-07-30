@@ -13,6 +13,8 @@
             <field name="scanner_on_shipment_out"/>
             <label name="scanner_on_shipment_out_return"/>
             <field name="scanner_on_shipment_out_return"/>
+            <label name="scanner_on_shipment_internal"/>
+            <field name="scanner_on_shipment_internal"/>
             <label name="scanner_fill_quantity"/>
             <field name="scanner_fill_quantity"/>
             <label name="scanner_pending_quantity"/>
