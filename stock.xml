@@ -142,5 +142,37 @@
             <field name="button" ref="shipment_out_return_scan_all_button"/>
             <field name="group" ref="group_stock_scan_all"/>
         </record>
+
+        <!-- stock.shipment.internal -->
+         <record model="ir.model.button" id="shipment_internal_scan_button">
+            <field name="name">scan</field>
+            <field name="string">Scan</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.internal')]"/>
+        </record>
+        <record model="ir.model.button-res.group" id="shipment_internal_scan_button_group_stock">
+            <field name="button" ref="shipment_internal_scan_button"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+
+        <record model="ir.model.button" id="shipment_internal_reset_button">
+            <field name="name">reset_scanned_quantities</field>
+            <field name="string">Reset Scanned Quantities</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.internal')]"/>
+        </record>
+        <record model="ir.model.button-res.group" id="shipment_internal_reset_button_group_stock">
+            <field name="button" ref="shipment_internal_reset_button"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+
+        <record model="ir.model.button" id="shipment_internal_scan_all_button">
+            <field name="name">scan_all</field>
+            <field name="string">Scan All</field>
+            <field name="model" search="[('model', '=', 'stock.shipment.internal')]"/>
+        </record>
+        <record model="ir.model.button-res.group" id="shipment_internal_scan_all_button_group_stock_scan_all">
+            <field name="button" ref="shipment_internal_scan_all_button"/>
+            <field name="group" ref="group_stock_scan_all"/>
+        </record>
+
     </data>
 </tryton>
