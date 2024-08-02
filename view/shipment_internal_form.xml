@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!-- The COPYRIGHT file at the top level of this repository contains the full
+     copyright notices and license terms. -->
+<data>
+    <xpath expr="/form/notebook/page[1]" position="before">
+        <page name="pending_moves">
+            <group col="6" colspan="4" id="scanned">
+                <label name="scanned_product"/>
+                <field name="scanned_product"/>
+                <label name="scanned_quantity"/>
+                <field name="scanned_quantity"/>
+                <label name="scanned_uom"/>
+                <field name="scanned_uom"/>
+            </group>
+            <label id="spacing" string="" colspan="2"/>
+            <button name="scan" colspan="2"/>
+            <field name="pending_moves" colspan="4" view_ids="stock_scanner.move_view_tree_pending,stock_scanner.move_view_form_pending"/>
+        </page>
+    </xpath>
+    <xpath expr="//group[@id='buttons']" position="inside">
+        <button name="reset_scanned_quantities"/>
+        <button name="scan_all"/>
+    </xpath>
+</data>
