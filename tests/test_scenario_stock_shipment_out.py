@@ -164,6 +164,5 @@ class Test(unittest.TestCase):
         self.assertEqual(len(shipment_out.inventory_moves), 2)
         self.assertEqual(shipment_out.inventory_moves[0].state, 'done')
         self.assertEqual(shipment_out.outgoing_moves[0].state, 'done')
-        self.assertEqual(sum([m.quantity for m in shipment_out.inventory_moves]) == \
-            sum([m.quantity for m in shipment_out.outgoing_moves])
-        , True)
+        self.assertEqual(sum([m.quantity for m in shipment_out.inventory_moves]),
+            sum([m.quantity for m in shipment_out.outgoing_moves]))
