@@ -313,7 +313,6 @@ class StockScanMixin(object):
         move.quantity = self.scanned_quantity
         move.shipment = str(self)
         move.planned_date = self.planned_date
-        move.currency = self.company.currency
         return move
 
     def process_moves(self, moves):
@@ -396,7 +395,9 @@ class ShipmentIn(StockScanMixin, metaclass=PoolMeta):
         move.from_location = self.supplier_location
         move.to_location = self.warehouse_input
         # TODO: add to scanner or improve it
-        move.unit_price = move.product.cost_price
+        if move.unit_price_required:
+            move.unit_price = move.product.cost_price
+            move.currency = self.company.currency
         return move
 
     @classmethod
@@ -429,7 +430,9 @@ class ShipmentOut(StockScanMixin, metaclass=PoolMeta):
         move.from_location = self.warehouse_storage
         move.to_location = self.warehouse_output
         # TODO: add to scanner or improve it
-        move.unit_price = move.product.list_price
+        if move.unit_price_required:
+            move.unit_price = move.product.list_price
+            move.currency = self.company.currency
         return move
 
     @classmethod
@@ -449,7 +452,9 @@ class ShipmentOutReturn(ShipmentOut, metaclass=PoolMeta):
         move.from_location = self.customer_location
         move.to_location = self.warehouse_input
         # TODO: add to scanner or improve it
-        move.unit_price = move.product.list_price
+        if move.unit_price_required:
+            move.unit_price = move.product.list_price
+            move.currency = self.company.currency
         return move
 
     @classmethod
@@ -497,8 +502,6 @@ class ShipmentInternal(StockScanMixin, metaclass=PoolMeta):
             cls.set_scanned_quantity_as_quantity([shipment], field_name)
         super().assign(shipments)
 
-
-
     @classmethod
     def assign(cls, shipments):
         print("holaaaaaa2 ")
@@ -508,15 +511,3 @@ class ShipmentInternal(StockScanMixin, metaclass=PoolMeta):
                 field_name = 'outgoing_moves'
             cls.set_scanned_quantity_as_quantity([shipment], field_name)
         super().assign(shipments)
-
-
-
-
-
-
-
-
-
-
-
-
