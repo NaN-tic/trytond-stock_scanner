@@ -482,7 +482,8 @@ class ShipmentInternal(StockScanMixin, metaclass=PoolMeta):
             move.pending_quantity > 0]
         tuples = []
         for move in moves:
-            if move.origin and hasattr(move.origin, 'purchase'):
+            if (move.origin and hasattr(move.origin, 'purchase') and
+                    move.origin.purchase):
                 tuples.append((move, move.origin.purchase.purchase_date))
             else:
                 tuples.append((move, datetime.date.today()))
