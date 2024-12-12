@@ -493,7 +493,6 @@ class ShipmentInternal(StockScanMixin, metaclass=PoolMeta):
 
     @dualmethod
     def assign_try(cls, shipments):
-        print("holaaaaaa")
         for shipment in shipments:
             field_name = 'moves'
             if shipment.transit_location:
@@ -505,7 +504,6 @@ class ShipmentInternal(StockScanMixin, metaclass=PoolMeta):
 
     @classmethod
     def assign(cls, shipments):
-        print("holaaaaaa2 ")
         for shipment in shipments:
             field_name = 'moves'
             if shipment.transit_location:
