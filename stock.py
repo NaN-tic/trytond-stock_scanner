@@ -1,13 +1,13 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
-from trytond.model import Workflow, ModelView, fields, dualmethod
-from trytond.pyson import Bool, Eval, If, And
-from trytond.pool import Pool, PoolMeta
+import datetime
+from operator import itemgetter
+
 from trytond.exceptions import UserWarning
 from trytond.i18n import gettext
-from operator import itemgetter
-import datetime
-
+from trytond.model import ModelView, Workflow, dualmethod, fields
+from trytond.pool import Pool, PoolMeta
+from trytond.pyson import And, Bool, Eval, If
 
 __all__ = ['Configuration', 'Move', 'ShipmentIn',
     'ShipmentOut', 'ShipmentOutReturn']
@@ -74,9 +74,32 @@ class Move(metaclass=PoolMeta):
         return 0.
 
     def get_quantity_for_value(self):
-        ShipmentIn = Pool().get('stock.shipment.in')
-        if isinstance(self.shipment, ShipmentIn):
+        pool = Pool()
+        ShipmentIn = pool.get('stock.shipment.in')
+        ShipmentInReturn = pool.get('stock.shipment.in.return')
+        ShipmentOut = pool.get('stock.shipment.out')
+        ShipmentOutReturn = pool.get('stock.shipment.out.return')
+        ShipmentInternal = pool.get('stock.shipment.internal')
+        Configuration = pool.get('stock.configuration')
+        config = Configuration(1)
+
+        if (isinstance(self.shipment, ShipmentIn)
+                and config.scanner_on_shipment_in):
             return self.scanned_quantity
+        if (isinstance(self.shipment, ShipmentInReturn)
+                and config.scanner_on_shipment_in_return):
+            return self.scanned_quantity
+
+        if (isinstance(self.shipment, ShipmentOut)
+                and config.scanner_on_shipment_out):
+            return self.scanned_quantity
+        if (isinstance(self.shipment, ShipmentOutReturn)
+                and config.scanner_on_shipment_out_return):
+            return self.scanned_quantity
+        if (isinstance(self.shipment, ShipmentInternal)
+                and config.scanner_on_shipment_internal):
+            return self.scanned_quantity
+
         return self.quantity
 
     @classmethod
