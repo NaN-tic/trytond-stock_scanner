@@ -518,7 +518,7 @@ class ShipmentInternal(StockScanMixin, metaclass=PoolMeta):
             if shipment.transit_location:
                 field_name = 'outgoing_moves'
             cls.set_scanned_quantity_as_quantity([shipment], field_name)
-        super().assign(shipments)
+        super().assign_try(shipments)
 
     @classmethod
     def assign(cls, shipments):
