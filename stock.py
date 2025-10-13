@@ -454,7 +454,7 @@ class ShipmentOut(StockScanMixin, metaclass=PoolMeta):
         move.to_location = self.warehouse_output
         # TODO: add to scanner or improve it
         if move.unit_price_required:
-            move.unit_price = move.product.list_price
+            move.unit_price = move.product.list_price_used
             move.currency = self.company.currency
         return move
 
@@ -476,7 +476,7 @@ class ShipmentOutReturn(ShipmentOut, metaclass=PoolMeta):
         move.to_location = self.warehouse_input
         # TODO: add to scanner or improve it
         if move.unit_price_required:
-            move.unit_price = move.product.list_price
+            move.unit_price = move.product.list_price_used
             move.currency = self.company.currency
         return move
 
