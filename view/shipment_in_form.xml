@@ -18,10 +18,8 @@
                view_ids="stock_scanner.move_view_tree_pending,stock_scanner.move_view_form_pending"/>
         </page>
     </xpath>
-    <xpath expr="/form/group[@id='buttons']/button[@name='cancel']"
-        position="before">
-        <group id="scan_buttons" colspan="2" col="3">
-            <label id="spacing" xexpand="1"/>
+    <xpath expr="/form/group[@id='buttons']/button[@name='cancel']" position="before">
+        <group id="scan_buttons" col="2" colspan="6">
             <button name="reset_scanned_quantities"/>
             <button name="scan_all"/>
         </group>
