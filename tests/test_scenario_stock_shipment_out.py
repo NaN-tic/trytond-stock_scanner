@@ -155,7 +155,8 @@ class Test(unittest.TestCase):
         shipment_out.reload()
         self.assertEqual(shipment_out.pending_moves, [])
 
-        # Set the state as Done
+        # Re-enter the assigned state before picking on 7.9.
+        shipment_out.click('assign_force')
         shipment_out.click('pick')
         shipment_out.click('pack')
         move, _ = sorted(shipment_out.inventory_moves, key=lambda x: x.quantity)
