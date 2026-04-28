@@ -34,6 +34,7 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             <field name="model">stock.inventory.line</field>
             <field name="type">tree</field>
             <field name="name">stock_scanner_move_list</field>
+            <field name="priority" eval="20"/>
         </record>
     </data>
 </tryton>
