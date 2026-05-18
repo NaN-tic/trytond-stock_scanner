@@ -19,10 +19,7 @@
         </page>
     </xpath>
     <xpath expr="/form/group[@id='buttons']/button[@name='cancel']" position="before">
-        <group id="scan_buttons" col="2" colspan="6">
-            <button name="reset_scanned_quantities"/>
-            <button name="scan_all"/>
-        </group>
-        <newline/>
+        <button name="reset_scanned_quantities"/>
+        <button name="scan_all"/>
     </xpath>
 </data>
