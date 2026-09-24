@@ -6,11 +6,6 @@
         <record model="res.group" id="group_stock_scan_all">
             <field name="name">Stock Scan All</field>
         </record>
-        <record model="res.user-res.group"
-            id="user_admin_group_stock_scan_all">
-            <field name="user" ref="res.user_admin"/>
-            <field name="group" ref="group_stock_scan_all"/>
-        </record>
 
         <!-- stock.configuration -->
         <record id="view_stock_configuration_view_form" model="ir.ui.view">
