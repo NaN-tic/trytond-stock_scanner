@@ -182,7 +182,7 @@ class StockScanMixin(object):
         states=MIXIN_STATES, depends=['company'],
         help='Scan the code of the next product.')
     scanned_uom = fields.Many2One('product.uom', 'Scanned UoM', states={
-            'readonly': True,
+            'editable': False,
         })
     scanned_quantity = fields.Float('Quantity', 'scanned_uom',
         states=MIXIN_STATES, help='Quantity of the scanned product.')

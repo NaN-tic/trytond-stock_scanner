@@ -3,7 +3,7 @@
 from trytond.model import ModelView, fields
 from trytond.wizard import Wizard, StateTransition, StateView, Button
 from trytond.pool import Pool
-from trytond.transaction import Transaction
+from trytond.transaction import Transaction, without_check_access
 
 
 class StockPickingShipmentOutAsk(ModelView):
@@ -88,12 +88,16 @@ class StockPickingShipmentOut(Wizard):
             # picking is 0 means set scanned_quantity and quantity are 0
             if quantity == 0.0:
                 moves = shipment.get_matching_moves()
-                Move.write(moves, {'scanned_quantity': 0.0, 'quantity': 0.0})
+                with without_check_access():
+                    Move.write(
+                        moves, {'scanned_quantity': 0.0, 'quantity': 0.0})
                 shipment.clear_scan_values()
-                shipment.save()
+                with without_check_access():
+                    shipment.save()
             else:
                 shipment.scanned_quantity = shipment.scanned_uom.round(quantity)
-                shipment.save()
+                with without_check_access():
+                    shipment.save()
                 Shipment.scan([shipment])
                 shipment = Shipment(shipment.id)
         else:
@@ -103,10 +107,12 @@ class StockPickingShipmentOut(Wizard):
                     shipment.scanned_product = move.product
                     shipment.scanned_quantity = 1
                     shipment.on_change_scanned_product()
-                    shipment.save()
+                    with without_check_access():
+                        shipment.save()
                     Shipment.scan([shipment])
                     shipment.scanned_product = move.product
-                    shipment.save()
+                    with without_check_access():
+                        shipment.save()
                     break
             else:
                 self.scan.product = None
