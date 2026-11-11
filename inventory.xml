@@ -37,4 +37,10 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             <field name="priority" eval="20"/>
         </record>
     </data>
+    <data>
+        <record model="ir.action-res.group" id="scanner_inventory_group_stock">
+            <field name="action" ref="act_stock_scanner_inventory"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+    </data>
 </tryton>

@@ -30,4 +30,10 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             id="menu_stock_shipment_out_picking"
             sequence="50"/>
     </data>
+    <data>
+        <record model="ir.action-res.group" id="picking_shipment_out_group_stock">
+            <field name="action" ref="act_stock_picking_shipment_out"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+    </data>
 </tryton>
